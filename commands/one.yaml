@@ -1,0 +1,26 @@
+task1:
+  command: /path/to/command
+  shedules:
+    sch2:
+      every: 2:30
+      except:
+        hours:
+          - 4
+          - 5
+          - 13
+        weekdays:
+          - wed
+          - mon
+          - tue
+        monthdays:
+          - 13
+      weekdays:
+        - wed
+        - mon
+        - tue
+      monthdays:
+        - 13
+      at:
+        - 3
+        - 5
+        - 5:55
