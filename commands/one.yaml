@@ -1,8 +1,18 @@
 task1:
   command: /path/to/command
-  shedules:
+  schedules:
     sch2:
       every: 2:30
+      weekdays:
+        - wed
+        - mon
+        - tue
+      monthdays:
+        - 13
+      at:
+        - 3
+        - 5
+        - 5:55
       except:
         hours:
           - 4
@@ -14,13 +24,4 @@ task1:
           - tue
         monthdays:
           - 13
-      weekdays:
-        - wed
-        - mon
-        - tue
-      monthdays:
-        - 13
-      at:
-        - 3
-        - 5
-        - 5:55
+    sch1:

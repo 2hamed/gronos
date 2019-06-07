@@ -17,9 +17,13 @@ func main() {
 		panic(err)
 	}
 
-	m := make(map[interface{}]interface{})
+	m := make(map[string]Task)
 
-	yaml.Unmarshal(data, &m)
+	err = yaml.Unmarshal(data, &m)
 
-	fmt.Println(m)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(m["task1"].Schedules)
 }
