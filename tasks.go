@@ -1,15 +1,20 @@
 package main
 
+type Tasks map[string]Task
+
+// Task is command which run by Schdule
 type Task struct {
-	Command   string
-	Schedules map[string]Schedules `yaml:"schedules"`
+	Command   string     `yaml:"command"`
+	Schedules []Schedule `yaml:"schedules"`
 }
 
-type Schedules struct {
-	every     string   `yaml:"every"`
-	weekdays  []string `yaml:"weekdays"`
-	monthdays []int8   `yaml:"monthdays"`
-	at        []int8   `yaml:"at"`
+// Schedule is struct containing when the task should be run
+type Schedule struct {
+	Name      string   `yaml:"name"`
+	Every     string   `yaml:"every"`
+	Weekdays  []string `yaml:"weekdays"`
+	Monthdays []int    `yaml:"monthdays"`
+	At        []string `yaml:"at"`
 
-	except *Schedules `yaml:"except"`
+	Except *Schedule `yaml:"except"`
 }

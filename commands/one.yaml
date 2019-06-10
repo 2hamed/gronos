@@ -1,27 +1,74 @@
 task1:
-  command: /path/to/command
-  schedules:
-    sch2:
-      every: 2:30
-      weekdays:
-        - wed
-        - mon
-        - tue
-      monthdays:
-        - 13
-      at:
-        - 3
-        - 5
-        - 5:55
-      except:
-        hours:
-          - 4
-          - 5
-          - 13
+    command: /path/to/command
+    schedules:
+      - name: sch1
+        every: "2:30"
         weekdays:
           - wed
           - mon
           - tue
         monthdays:
           - 13
-    sch1:
+        at:
+          - 3
+          - 5
+          - 5
+        except:
+          every: "3:45"
+          weekdays:
+            - wed
+            - tue
+          monthdays:
+            - 13
+          at:
+            - 5
+      - name: sch2
+        every: "2:30"
+        weekdays:
+          - wed
+          - mon
+          - tue
+        monthdays:
+          - 13
+        at:
+          - 3
+          - 5
+          - 5
+
+task2:
+    command: /path/to/command
+    schedules:
+      - name: sch1
+        every: "2:30"
+        weekdays:
+          - wed
+          - mon
+          - tue
+        monthdays:
+          - 13
+        at:
+          - 3
+          - 5
+          - 5
+        except:
+          every: "3:45"
+          weekdays:
+            - wed
+            - tue
+          monthdays:
+            - 13
+          at:
+            - 5
+      - name: sch2
+        every: "2:30"
+        weekdays:
+          - wed
+          - mon
+          - tue
+        monthdays:
+          - 13
+        at:
+          - 3
+          - 5
+          - 5
+

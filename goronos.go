@@ -17,13 +17,15 @@ func main() {
 		panic(err)
 	}
 
-	m := make(map[string]Task)
+	// fmt.Println(string(data))
 
-	err = yaml.Unmarshal(data, &m)
+	var m Tasks
+
+	err = yaml.UnmarshalStrict(data, &m)
 
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(m["task1"].Schedules)
+	fmt.Println(m)
 }
