@@ -8,6 +8,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// Tasks is a type alias of map[string]Task
 type Tasks map[string]Task
 
 // Task is command which run by Schdule
