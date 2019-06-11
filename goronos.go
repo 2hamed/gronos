@@ -15,5 +15,5 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(tasks)
+	fmt.Println(tasks["task1"].Schedules[0].At())
 }

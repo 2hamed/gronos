@@ -16,17 +16,6 @@ type Task struct {
 	Schedules []Schedule `yaml:"schedules"`
 }
 
-// Schedule is struct containing when the task should be run
-type Schedule struct {
-	Name      string   `yaml:"name"`
-	Every     string   `yaml:"every"`
-	Weekdays  []string `yaml:"weekdays"`
-	Monthdays []int8   `yaml:"monthdays"`
-	At        []string `yaml:"at"`
-
-	Except *Schedule `yaml:"except"`
-}
-
 // LoadTasksFromFile reads an etire YAML file and outputs the corresponding Tasks struct
 func LoadTasksFromFile(filePath string) (Tasks, error) {
 	content, err := ioutil.ReadFile(filePath)
