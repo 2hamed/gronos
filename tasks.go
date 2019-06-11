@@ -2,8 +2,11 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
+	"log"
 	"strings"
+	"syscall"
 
 	"gopkg.in/yaml.v2"
 )
@@ -13,8 +16,8 @@ type Tasks map[string]Task
 
 // Task is command which run by Schdule
 type Task struct {
-	Command   string     `yaml:"command"`
-	Schedules []Schedule `yaml:"schedules"`
+	Command  string   `yaml:"command"`
+	Schedule Schedule `yaml:"schedule"`
 }
 
 // LoadTasksFromFile reads an etire YAML file and outputs the corresponding Tasks struct
@@ -61,4 +64,13 @@ func LoadTasksFromDir(dirPath string) (Tasks, error) {
 	}
 
 	return tasks, nil
+}
+
+func (task Task) Execute() {
+	go func() {
+		err := syscall.Exec(task.Command, nil, nil)
+		if err != nil {
+			log.Println(fmt.Errorf("Running command %s failed: %v", task.Command, err))
+		}
+	}()
 }

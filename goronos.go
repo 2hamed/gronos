@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 )
 
 var tasks Tasks
@@ -15,5 +16,22 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(tasks["task2"].Schedules[0].Weekdays())
+	fmt.Println(tasks)
+
+	ticker := time.Tick(5 * time.Second)
+	forever := make(chan struct{})
+
+	go func() {
+		for {
+			t := <-ticker
+			for taskName, task := range tasks {
+				if task.Schedule.IsTime(taskName, t) {
+					task.Execute()
+					taskLastRunTime[taskName] = time.Now().Unix()
+				}
+			}
+		}
+	}()
+
+	<-forever
 }

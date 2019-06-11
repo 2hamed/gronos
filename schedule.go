@@ -1,11 +1,14 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
 	"time"
 )
+
+var taskLastRunTime = make(map[string]int64)
 
 // Schedule is struct containing when the task should be run
 type Schedule struct {
@@ -32,9 +35,6 @@ func (s *Schedule) UnmarshalYAML(unmarshal func(interface{}) error) error {
 }
 
 func (s *Schedule) populate(m map[interface{}]interface{}) error {
-	if v, ok := m["name"]; ok {
-		s.name = v.(string)
-	}
 
 	if v, ok := m["every"]; ok {
 		s.every = v.(string)
@@ -128,4 +128,25 @@ func (s Schedule) Weekdays() []time.Weekday {
 // Except returns the Schedule struct denoting when not to run this task
 func (s Schedule) Except() *Schedule {
 	return s.except
+}
+
+// Every return the number of seconds at which the task should be run
+func (s Schedule) Every() (int64, error) {
+	hm := strings.Split(s.every, ":")
+	if len(hm) == 0 {
+		return 0, errors.New("no `every` set")
+	}
+	hour, _ := strconv.Atoi(hm[0])
+	var min int
+	if len(hm) > 1 {
+		min, _ = strconv.Atoi(hm[1])
+	}
+
+	return int64(hour*3600 + min*60), nil
+}
+
+// IsTime checks whether the Schedule is set to run on `t` or not
+func (s Schedule) IsTime(taskName string, t time.Time) bool {
+
+	return true
 }
