@@ -10,7 +10,7 @@ task1:
         monthdays:
           - 13
         at:
-          - 3:0
+          - 3:00
           - 5:13
           - 15:34
         except:

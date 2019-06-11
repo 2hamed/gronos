@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"time"
 )
 
 // Schedule is struct containing when the task should be run
@@ -74,21 +75,20 @@ func (s *Schedule) populate(m map[interface{}]interface{}) error {
 
 	return nil
 }
+func (s Schedule) At() []time.Time {
+	times := make([]time.Time, len(s.at))
+	for i, v := range s.at {
+		fmt.Println(v)
+		t, err := time.Parse("15:04", v)
+		if err == nil {
+			times[i] = t
+		} else {
+			fmt.Println(err)
+		}
+	}
 
-// func (s Schedule) At() []time.Time {
-// 	times := make([]time.Time, len(s.at))
-// 	for i, v := range s.at {
-// 		fmt.Println(v)
-// 		t, err := time.Parse(time.RFC822, v)
-// 		if err == nil {
-// 			times[i] = t
-// 		} else {
-// 			fmt.Println(err)
-// 		}
-// 	}
-
-// 	return times
-// }
+	return times
+}
 func (s Schedule) Except() *Schedule {
 	return s.except
 }
