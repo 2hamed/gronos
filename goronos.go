@@ -23,7 +23,7 @@ func main() {
 
 	go func() {
 		for {
-			t := <-ticker
+			_ = <-ticker
 			for _, task := range tasks {
 				if task.IsTime() {
 					task.Execute()

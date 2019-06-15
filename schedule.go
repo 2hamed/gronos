@@ -48,7 +48,7 @@ func (s *Schedule) populate(m map[interface{}]interface{}) error {
 	if v, ok := m["monthdays"]; ok {
 		mds := v.([]interface{})
 		for _, v := range mds {
-			s.monthdays = append(s.monthdays, int8(v.(int)))
+			s.monthdays = append(s.monthdays, v.(int))
 		}
 	}
 
