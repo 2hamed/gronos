@@ -1,4 +1,4 @@
-task1:
+- name: command1
   command: /path/to/command1
   schedule:
     every: "2:30"
@@ -22,7 +22,7 @@ task1:
       at:
         - 5
 
-task2:
+- name: command2
   command: /path/to/command2
   schedule:
     every: 2:30

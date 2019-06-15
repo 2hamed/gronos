@@ -24,10 +24,9 @@ func main() {
 	go func() {
 		for {
 			t := <-ticker
-			for taskName, task := range tasks {
-				if task.Schedule.IsTime(taskName, t) {
+			for _, task := range tasks {
+				if task.IsTime() {
 					task.Execute()
-					taskLastRunTime[taskName] = time.Now().Unix()
 				}
 			}
 		}

@@ -8,14 +8,12 @@ import (
 	"time"
 )
 
-var taskLastRunTime = make(map[string]int64)
-
 // Schedule is struct containing when the task should be run
 type Schedule struct {
 	name      string   `yaml:"name"`
 	every     string   `yaml:"every"`
 	weekdays  []string `yaml:"weekdays"`
-	monthdays []int8   `yaml:"monthdays"`
+	monthdays []int    `yaml:"monthdays"`
 	at        []string `yaml:"at"`
 
 	except *Schedule `yaml:"except"`
