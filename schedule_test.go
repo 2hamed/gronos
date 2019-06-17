@@ -54,7 +54,7 @@ func TestScheduleUnmarshal(t *testing.T) {
 		t.Error("wrong value for `weekdays`")
 	}
 
-	monthdays := schedule.monthdays
+	monthdays := schedule.Monthdays()
 
 	if !reflect.DeepEqual(monthdays, []int{13}) {
 		t.Error("wrong value for `monthdays`")

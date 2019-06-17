@@ -143,6 +143,11 @@ func (s Schedule) Every() (int64, error) {
 	return int64(hour*3600 + min*60), nil
 }
 
+// Monthdays returns the month days this schedule shoud run on
+func (s Schedule) Monthdays() []int {
+	return s.monthdays
+}
+
 // IsTime checks whether the Schedule is set to run on `t` or not
 func (s Schedule) IsTime(taskName string, t time.Time) bool {
 
