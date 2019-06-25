@@ -147,9 +147,3 @@ func (s Schedule) Every() (int64, error) {
 func (s Schedule) Monthdays() []int {
 	return s.monthdays
 }
-
-// IsTime checks whether the Schedule is set to run on `t` or not
-func (s Schedule) IsTime(taskName string, t time.Time) bool {
-
-	return true
-}
