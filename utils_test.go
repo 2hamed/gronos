@@ -64,14 +64,27 @@ func TestParseMonth(t *testing.T) {
 		t.Error(err)
 	}
 
+	if m != time.January {
+		t.Error("wrong month parsed")
+	}
+
 	m, err = ParseMonth("jun")
 	if err != nil {
 		t.Error(err)
 	}
 
+	if m != time.June {
+		t.Error("wrong month parsed")
+	}
+	
+
 	m, err = ParseMonth("january")
 	if err != nil {
 		t.Error(err)
+	}
+	
+	if m != time.January {
+		t.Error("wrong month parsed")
 	}
 
 	m, err = ParseMonth("")
