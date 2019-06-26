@@ -10,11 +10,12 @@ import (
 
 // Schedule is struct containing when the task should be run
 type Schedule struct {
-	name      string   `yaml:"name"`
-	every     string   `yaml:"every"`
-	weekdays  []string `yaml:"weekdays"`
-	monthdays []int    `yaml:"monthdays"`
-	at        []string `yaml:"at"`
+	name      string       `yaml:"name"`
+	months    []time.Month `yaml:"months"`
+	every     string       `yaml:"every"`
+	weekdays  []string     `yaml:"weekdays"`
+	monthdays []int        `yaml:"monthdays"`
+	at        []string     `yaml:"at"`
 
 	except *Schedule `yaml:"except"`
 }
@@ -71,6 +72,14 @@ func (s *Schedule) populate(m map[interface{}]interface{}) error {
 		var except = Schedule{}
 		except.populate(exc.(map[interface{}]interface{}))
 		s.except = &except
+	}
+
+	months := m["months"]
+	if months != nil {
+		s.months = make([]time.Month, 0)
+		for _, v := range months.([]interface{}) {
+			s.months = append(s.months, ParseMonth(v))
+		}
 	}
 
 	return nil

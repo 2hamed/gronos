@@ -16,7 +16,7 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(tasks)
+	// fmt.Println(tasks)
 
 	ticker := time.Tick(5 * time.Second)
 	forever := make(chan struct{})
@@ -24,6 +24,7 @@ func main() {
 	go func() {
 		for {
 			_ = <-ticker
+			fmt.Println("checking tasks")
 			for _, task := range tasks {
 				if task.IsTime() {
 					task.Execute()
@@ -32,5 +33,6 @@ func main() {
 		}
 	}()
 
+	fmt.Println("Goronos is now active...")
 	<-forever
 }

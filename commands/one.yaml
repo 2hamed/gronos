@@ -2,6 +2,10 @@
   command: /path/to/command1
   schedule:
     every: "2:30"
+    months:
+      - jun
+      - 3
+      - dec
     weekdays:
       - wed
       - mon

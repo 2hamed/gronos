@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"path/filepath"
 	"strings"
 	"syscall"
 	"time"
@@ -47,6 +48,8 @@ func (task Task) IsTime() bool {
 	schedule := task.Schedule
 	every, err := schedule.Every()
 
+	now := time.Now()
+
 	if err == nil {
 		if lastTime, ok := taskLastRunTime[task.Name]; ok {
 			if diff := time.Now().Unix() - lastTime; diff > every {
@@ -57,6 +60,17 @@ func (task Task) IsTime() bool {
 		}
 	}
 
+	if WeekDaySliceContains(schedule.Weekdays(), now.Weekday()) {
+		result = result && true
+	}
+
+	if IntSliceContains(schedule.Monthdays(), now.Day()) {
+		result = result && true
+	}
+
+	if TimeSliceContainsHoursMintues(schedule.At(), now) {
+		result = result && true
+	}
 	// TODO: check for other criteria
 
 	return result && !task.shouldSkip()
@@ -111,25 +125,27 @@ func LoadTasksFromFile(filePath string) (Tasks, error) {
 // LoadTasksFromDir scans a directory and loads every YAML file into corresponding Tasks struct
 func LoadTasksFromDir(dirPath string) (Tasks, error) {
 
+	dirPath, _ = filepath.Abs(dirPath)
+
 	files, err := ioutil.ReadDir(dirPath)
 	if err != nil {
 		panic(err)
 	}
 
-	var tasks Tasks
+	var tasks Tasks = make(Tasks, 0)
 
 	for _, f := range files {
 		if !f.IsDir() && strings.HasSuffix(f.Name(), ".yaml") {
-			ts, err := LoadTasksFromFile(dirPath + f.Name())
+			ts, err := LoadTasksFromFile(dirPath + "/" + f.Name())
 			if err != nil {
 				panic(err)
 			}
 
-			for i, task := range ts {
+			for _, task := range ts {
 				if _, ok := taskMap[task.Name]; ok {
 					return nil, errors.New("duplicate task name: " + task.Name)
 				}
-				tasks[i] = task
+				tasks = append(tasks, task)
 				taskMap[task.Name] = task
 			}
 		}
