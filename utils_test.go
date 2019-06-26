@@ -57,3 +57,25 @@ func TestTimeSliceContainsHoursMintues(t *testing.T) {
 		t.Error("nil slice should always return false")
 	}
 }
+
+func TestParseMonth(t *testing.T) {
+	m, err := ParseMonth(1)
+	if err != nil {
+		t.Error(err)
+	}
+
+	m, err = ParseMonth("jun")
+	if err != nil {
+		t.Error(err)
+	}
+
+	m, err = ParseMonth("january")
+	if err != nil {
+		t.Error(err)
+	}
+
+	m, err = ParseMonth("")
+	if err == nil {
+		t.Error("should return error")
+	}
+}

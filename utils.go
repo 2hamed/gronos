@@ -1,6 +1,9 @@
 package main
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 // Generics would have been nice
 
@@ -49,33 +52,33 @@ func TimeSliceContainsHoursMintues(haystack []time.Time, n time.Time) bool {
 	return false
 }
 
-func ParseMonth(v interface{}) time.Month {
+func ParseMonth(v interface{}) (time.Month, error) {
 	switch v {
 	case "jan", "january", 1:
-		return time.January
+		return time.January, nil
 	case "feb", "february", 2:
-		return time.February
+		return time.February, nil
 	case "mar", "march", 3:
-		return time.March
+		return time.March, nil
 	case "apr", "april", 4:
-		return time.April
+		return time.April, nil
 	case "may", 5:
-		return time.May
+		return time.May, nil
 	case "jun", "june", 6:
-		return time.June
+		return time.June, nil
 	case "jul", "july", 7:
-		return time.July
+		return time.July, nil
 	case "aug", "august", 8:
-		return time.August
+		return time.August, nil
 	case "sep", "september", 9:
-		return time.September
+		return time.September, nil
 	case "oct", "october", 10:
-		return time.October
+		return time.October, nil
 	case "nov", "november", 11:
-		return time.November
+		return time.November, nil
 	case "dec", "december", 12:
-		return time.December
+		return time.December, nil
 	default:
-		panic("invalid month")
+		return time.January, fmt.Errorf("invalid input %v", v)
 	}
 }

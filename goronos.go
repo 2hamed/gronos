@@ -16,8 +16,6 @@ func main() {
 		panic(err)
 	}
 
-	// fmt.Println(tasks)
-
 	ticker := time.Tick(5 * time.Second)
 	forever := make(chan struct{})
 

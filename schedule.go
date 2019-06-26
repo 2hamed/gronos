@@ -10,7 +10,6 @@ import (
 
 // Schedule is struct containing when the task should be run
 type Schedule struct {
-	name      string       `yaml:"name"`
 	months    []time.Month `yaml:"months"`
 	every     string       `yaml:"every"`
 	weekdays  []string     `yaml:"weekdays"`
@@ -78,7 +77,10 @@ func (s *Schedule) populate(m map[interface{}]interface{}) error {
 	if months != nil {
 		s.months = make([]time.Month, 0)
 		for _, v := range months.([]interface{}) {
-			s.months = append(s.months, ParseMonth(v))
+			m, err := ParseMonth(v)
+			if err == nil {
+				s.months = append(s.months, m)
+			}
 		}
 	}
 
