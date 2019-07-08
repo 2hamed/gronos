@@ -9,7 +9,7 @@ import (
 var tasks Tasks
 
 func main() {
-	path := os.Args[1]
+	path := os.Args[1] 
 
 	tasks, err := LoadTasksFromDir(path)
 	if err != nil {
