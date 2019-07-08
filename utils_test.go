@@ -36,6 +36,21 @@ func TestWeekdaySliceContains(t *testing.T) {
 		t.Error("nil slice should always return false")
 	}
 }
+func TestMonthSliceContains(t *testing.T) {
+	haystack := []time.Month{time.January, time.March, time.October}
+
+	if MonthSliceContains(haystack, time.June) {
+		t.Error("haystack does not contain time.June")
+	}
+
+	if !MonthSliceContains(haystack, time.March) {
+		t.Error("haystack does contain time.March")
+	}
+
+	if MonthSliceContains(nil, time.January) {
+		t.Error("nil slice should always return false")
+	}
+}
 
 func TestTimeSliceContainsHoursMintues(t *testing.T) {
 	haystack := []time.Time{
@@ -76,13 +91,12 @@ func TestParseMonth(t *testing.T) {
 	if m != time.June {
 		t.Error("wrong month parsed")
 	}
-	
 
 	m, err = ParseMonth("january")
 	if err != nil {
 		t.Error(err)
 	}
-	
+
 	if m != time.January {
 		t.Error("wrong month parsed")
 	}

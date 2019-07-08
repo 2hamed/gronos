@@ -158,3 +158,7 @@ func (s Schedule) Every() (int64, error) {
 func (s Schedule) Monthdays() []int {
 	return s.monthdays
 }
+
+func (s Schedule) Months() []time.Month {
+	return s.months
+}

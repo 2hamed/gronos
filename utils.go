@@ -52,33 +52,53 @@ func TimeSliceContainsHoursMintues(haystack []time.Time, n time.Time) bool {
 	return false
 }
 
+// MonthSliceContains hecks a value `n` exists in slice `haystack`
+func MonthSliceContains(haystack []time.Month, n time.Month) bool {
+	if haystack == nil {
+		return false
+	}
+
+	for _, t := range haystack {
+		if t == n {
+			return true
+		}
+	}
+
+	return false
+}
+
 func ParseMonth(v interface{}) (time.Month, error) {
+	var m time.Month
+	var err error = nil
+
 	switch v {
 	case "jan", "january", 1:
-		return time.January, nil
+		m = time.January
 	case "feb", "february", 2:
-		return time.February, nil
+		m = time.February
 	case "mar", "march", 3:
-		return time.March, nil
+		m = time.March
 	case "apr", "april", 4:
-		return time.April, nil
+		m = time.April
 	case "may", 5:
-		return time.May, nil
+		m = time.May
 	case "jun", "june", 6:
-		return time.June, nil
+		m = time.June
 	case "jul", "july", 7:
-		return time.July, nil
+		m = time.July
 	case "aug", "august", 8:
-		return time.August, nil
+		m = time.August
 	case "sep", "september", 9:
-		return time.September, nil
+		m = time.September
 	case "oct", "october", 10:
-		return time.October, nil
+		m = time.October
 	case "nov", "november", 11:
-		return time.November, nil
+		m = time.November
 	case "dec", "december", 12:
-		return time.December, nil
+		m = time.December
 	default:
-		return time.January, fmt.Errorf("invalid input %v", v)
+		err = fmt.Errorf("invalid input %v", v)
 	}
+
+	return m, err
 }

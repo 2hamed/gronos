@@ -71,6 +71,11 @@ func (task Task) IsTime() bool {
 	if TimeSliceContainsHoursMintues(schedule.At(), now) {
 		result = result && true
 	}
+
+	if MonthSliceContains(schedule.Months(), now.Month()) {
+		result = result && true
+	}
+	
 	// TODO: check for other criteria
 
 	return result && !task.shouldSkip()

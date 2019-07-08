@@ -22,7 +22,6 @@ func main() {
 	go func() {
 		for {
 			_ = <-ticker
-			fmt.Println("checking tasks")
 			for _, task := range tasks {
 				if task.IsTime() {
 					task.Execute()
