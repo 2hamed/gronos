@@ -41,14 +41,14 @@ func (task Task) Execute() {
 }
 
 // IsTime returns `true` if it's time to run this task
-func (task Task) IsTime() bool {
+func (task Task) IsTime(anchor *time.Time) bool {
 
 	result := false
 
 	schedule := task.Schedule
 	every, err := schedule.Every()
 
-	now := time.Now()
+	now := anchor
 
 	if err == nil {
 		if lastTime, ok := taskLastRunTime[task.Name]; ok {
@@ -68,15 +68,13 @@ func (task Task) IsTime() bool {
 		result = result && true
 	}
 
-	if TimeSliceContainsHoursMintues(schedule.At(), now) {
+	if TimeSliceContainsHoursMintues(schedule.At(), *now) {
 		result = result && true
 	}
 
 	if MonthSliceContains(schedule.Months(), now.Month()) {
 		result = result && true
 	}
-	
-	// TODO: check for other criteria
 
 	return result && !task.shouldSkip()
 }
