@@ -34,7 +34,7 @@ schedule:
     monthdays:
       - 13
     at:
-      - 5 
+      - 5
 `
 
 	var task Task
@@ -45,4 +45,5 @@ schedule:
 		t.Error("the yaml is invalid", err)
 	}
 
+  
 }

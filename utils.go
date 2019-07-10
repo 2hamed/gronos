@@ -67,9 +67,10 @@ func MonthSliceContains(haystack []time.Month, n time.Month) bool {
 	return false
 }
 
+// ParseMonth parses a string or int value and converts it to a time.Month
 func ParseMonth(v interface{}) (time.Month, error) {
 	var m time.Month
-	var err error = nil
+	var err error
 
 	switch v {
 	case "jan", "january", 1:

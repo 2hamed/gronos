@@ -159,6 +159,7 @@ func (s Schedule) Monthdays() []int {
 	return s.monthdays
 }
 
+// Months returns an array of time.Month
 func (s Schedule) Months() []time.Month {
 	return s.months
 }

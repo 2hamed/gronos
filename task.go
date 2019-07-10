@@ -137,7 +137,7 @@ func LoadTasksFromDir(dirPath string) (Tasks, error) {
 		panic(err)
 	}
 
-	var tasks Tasks = make(Tasks, 0)
+	var tasks = make(Tasks, 0)
 
 	for _, f := range files {
 		if !f.IsDir() && strings.HasSuffix(f.Name(), ".yaml") {
