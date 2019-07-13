@@ -7,8 +7,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func TestTaskIsTime(t *testing.T) {
-	var yamlStr = `
+var taskYaml = `
 name: command1
 command: /path/to/command1
 schedule:
@@ -16,14 +15,17 @@ schedule:
   months:
     - jun
     - 3
+    - jul
     - dec
   weekdays:
     - sat
     - mon
     - tue
+    - thu
   monthdays:
     - 13
     - 1
+    - 18
   at:
     - 3:00
     - 5:13
@@ -31,7 +33,7 @@ schedule:
   except:
     every: "3:45"
     weekdays:
-      - wed
+      - thu
       - tue
     monthdays:
       - 13
@@ -39,9 +41,10 @@ schedule:
       - 5
 `
 
+func TestTaskIsTime(t *testing.T) {
 	var task Task
 
-	err := yaml.Unmarshal([]byte(yamlStr), &task)
+	err := yaml.Unmarshal([]byte(taskYaml), &task)
 
 	if err != nil {
 		t.Error("the yaml is invalid", err)
@@ -57,6 +60,13 @@ schedule:
 
 	if task.IsTime(&anchor) {
 		t.Error("false positive")
+	}
+
+	// testing the Except part
+	anchor = time.Date(2019, time.July, 18, 3, 0, 0, 0, time.Local) // 18th jul 2019 3:0
+
+	if task.IsTime(&anchor) {
+		t.Error("false positive, this should be excepted")
 	}
 
 }
