@@ -1,16 +1,10 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
-	"path/filepath"
-	"strings"
 	"syscall"
 	"time"
-
-	"gopkg.in/yaml.v2"
 )
 
 // Tasks is a type alias of []Task
@@ -45,10 +39,24 @@ func (task Task) IsTime(anchor *time.Time) bool {
 
 	result := false
 
-	schedule := task.Schedule
-	every, err := schedule.Every()
+	result = task.checkEvery(anchor)
 
-	now := anchor
+	result = result && task.Schedule.checkWeekday(anchor)
+
+	result = result && task.Schedule.checkMonthdays(anchor)
+
+	result = result && task.Schedule.checkAt(anchor)
+
+	result = result && task.Schedule.checkMonths(anchor)
+
+	return result && !task.shouldSkip(anchor)
+}
+
+func (task Task) checkEvery(anchor *time.Time) bool {
+
+	result := false
+
+	every, err := task.Schedule.Every()
 
 	if err == nil {
 		if lastTime, ok := taskLastRunTime[task.Name]; ok {
@@ -60,99 +68,34 @@ func (task Task) IsTime(anchor *time.Time) bool {
 		}
 	}
 
-	if WeekDaySliceContains(schedule.Weekdays(), now.Weekday()) {
-		result = result && true
-	}
-
-	if IntSliceContains(schedule.Monthdays(), now.Day()) {
-		result = result && true
-	}
-
-	if TimeSliceContainsHoursMintues(schedule.At(), *now) {
-		result = result && true
-	}
-
-	if MonthSliceContains(schedule.Months(), now.Month()) {
-		result = result && true
-	}
-
-	return result && !task.shouldSkip()
+	return result
 }
 
-func (task Task) shouldSkip() bool {
+func (task Task) shouldSkip(anchor *time.Time) bool {
 
 	schedule := task.Schedule
 
 	except := schedule.Except()
 
-	now := time.Now()
-
 	if except == nil {
 		return false
 	}
 
-	if IntSliceContains(except.monthdays, int(now.Month())) {
+	if except.checkMonthdays(anchor) {
 		return true
 	}
 
-	if WeekDaySliceContains(except.Weekdays(), now.Weekday()) {
+	if except.checkWeekday(anchor) {
 		return true
 	}
 
-	for _, t := range except.At() {
-		if t.Hour() == now.Hour() && t.Minute() == now.Minute() {
-			return true
-		}
+	if except.checkAt(anchor) {
+		return true
+	}
+
+	if except.checkMonths(anchor) {
+		return true
 	}
 
 	return false
-}
-
-// LoadTasksFromFile reads an etire YAML file and outputs the corresponding Tasks struct
-func LoadTasksFromFile(filePath string) (Tasks, error) {
-	content, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		return nil, err
-	}
-
-	var tasks Tasks
-	err = yaml.Unmarshal(content, &tasks)
-	if err != nil {
-		return nil, err
-	}
-
-	return tasks, nil
-
-}
-
-// LoadTasksFromDir scans a directory and loads every YAML file into corresponding Tasks struct
-func LoadTasksFromDir(dirPath string) (Tasks, error) {
-
-	dirPath, _ = filepath.Abs(dirPath)
-
-	files, err := ioutil.ReadDir(dirPath)
-	if err != nil {
-		panic(err)
-	}
-
-	var tasks = make(Tasks, 0)
-
-	for _, f := range files {
-		if !f.IsDir() && strings.HasSuffix(f.Name(), ".yaml") {
-			ts, err := LoadTasksFromFile(dirPath + "/" + f.Name())
-			if err != nil {
-				panic(err)
-			}
-
-			for _, task := range ts {
-				if _, ok := taskMap[task.Name]; ok {
-					return nil, errors.New("duplicate task name: " + task.Name)
-				}
-				tasks = append(tasks, task)
-				taskMap[task.Name] = task
-			}
-		}
-	}
-
-	return tasks, nil
 }

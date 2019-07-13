@@ -1,8 +1,14 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"io/ioutil"
+	"path/filepath"
+	"strings"
 	"time"
+
+	"gopkg.in/yaml.v2"
 )
 
 // Generics would have been nice
@@ -102,4 +108,53 @@ func ParseMonth(v interface{}) (time.Month, error) {
 	}
 
 	return m, err
+}
+
+// LoadTasksFromFile reads an etire YAML file and outputs the corresponding Tasks struct
+func LoadTasksFromFile(filePath string) (Tasks, error) {
+	content, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return nil, err
+	}
+
+	var tasks Tasks
+	err = yaml.Unmarshal(content, &tasks)
+	if err != nil {
+		return nil, err
+	}
+
+	return tasks, nil
+
+}
+
+// LoadTasksFromDir scans a directory and loads every YAML file into corresponding Tasks struct
+func LoadTasksFromDir(dirPath string) (Tasks, error) {
+
+	dirPath, _ = filepath.Abs(dirPath)
+
+	files, err := ioutil.ReadDir(dirPath)
+	if err != nil {
+		panic(err)
+	}
+
+	var tasks = make(Tasks, 0)
+
+	for _, f := range files {
+		if !f.IsDir() && strings.HasSuffix(f.Name(), ".yaml") {
+			ts, err := LoadTasksFromFile(dirPath + "/" + f.Name())
+			if err != nil {
+				panic(err)
+			}
+
+			for _, task := range ts {
+				if _, ok := taskMap[task.Name]; ok {
+					return nil, errors.New("duplicate task name: " + task.Name)
+				}
+				tasks = append(tasks, task)
+				taskMap[task.Name] = task
+			}
+		}
+	}
+
+	return tasks, nil
 }

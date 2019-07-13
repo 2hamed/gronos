@@ -163,3 +163,20 @@ func (s Schedule) Monthdays() []int {
 func (s Schedule) Months() []time.Month {
 	return s.months
 }
+
+func (s Schedule) checkWeekday(anchor *time.Time) bool {
+	return WeekDaySliceContains(s.Weekdays(), anchor.Weekday())
+}
+
+func (s Schedule) checkMonthdays(anchor *time.Time) bool {
+	return IntSliceContains(s.Monthdays(), anchor.Day())
+}
+
+func (s Schedule) checkAt(anchor *time.Time) bool {
+	return TimeSliceContainsHoursMintues(s.At(), *anchor)
+}
+
+func (s Schedule) checkMonths(anchor *time.Time) bool {
+	return MonthSliceContains(s.Months(), anchor.Month())
+}
+
