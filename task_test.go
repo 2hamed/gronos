@@ -2,7 +2,6 @@ package main
 
 import (
 	"testing"
-	"time"
 
 	"gopkg.in/yaml.v2"
 )
@@ -46,16 +45,16 @@ schedule:
 		t.Error("the yaml is invalid", err)
 	}
 
-	anchor := time.Date(2019, time.June, 1, 3, 0, 0, 0, time.Local) // 1st jun 2019 3:0
+	// anchor := time.Date(2019, time.June, 1, 3, 0, 0, 0, time.Local) // 1st jun 2019 3:0
 
-	if !task.IsTime(&anchor) {
-		t.Error("IsTime is wrong")
-	}
+	// if !task.IsTime(&anchor) {
+	// 	t.Error("IsTime is wrong")
+	// }
 
-	anchor = time.Date(2019, time.June, 2, 3, 0, 0, 0, time.Local) // 2nd jun 2019 3:0
+	// anchor = time.Date(2019, time.June, 2, 3, 0, 0, 0, time.Local) // 2nd jun 2019 3:0
 
-	if !task.IsTime(&anchor) {
-		t.Error("IsTime is wrong")
-	}
+	// if !task.IsTime(&anchor) {
+	// 	t.Error("IsTime is wrong")
+	// }
 
 }
