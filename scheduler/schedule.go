@@ -165,18 +165,29 @@ func (s Schedule) Months() []time.Month {
 }
 
 func (s Schedule) checkWeekday(anchor *time.Time) bool {
+	if len(s.Weekdays()) == 0 {
+		return true
+	}
 	return WeekDaySliceContains(s.Weekdays(), anchor.Weekday())
 }
 
 func (s Schedule) checkMonthdays(anchor *time.Time) bool {
+	if len(s.Monthdays()) == 0 {
+		return true
+	}
 	return IntSliceContains(s.Monthdays(), anchor.Day())
 }
 
 func (s Schedule) checkAt(anchor *time.Time) bool {
+	if len(s.At()) == 0 {
+		return true
+	}
 	return TimeSliceContainsHoursMintues(s.At(), *anchor)
 }
 
 func (s Schedule) checkMonths(anchor *time.Time) bool {
+	if len(s.Months()) == 0 {
+		return true
+	}
 	return MonthSliceContains(s.Months(), anchor.Month())
 }
-
