@@ -1,5 +1,5 @@
 - name: command1
-  command: /path/to/command1
+  command: ["/path/to/command1", "param1", "param2"]
   schedule:
     every: "2:30"
     months:
@@ -27,7 +27,7 @@
         - 5
 
 - name: command2
-  command: /path/to/command2
+  command: ["/path/to/command2"]
   schedule:
     every: 2:30
     weekdays:
