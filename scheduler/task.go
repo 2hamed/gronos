@@ -3,7 +3,7 @@ package scheduler
 import (
 	"fmt"
 	"log"
-	"syscall"
+	"os/exec"
 	"time"
 )
 
@@ -16,7 +16,7 @@ type TaskMap map[string]*Task
 // Task is command which run by Schdule
 type Task struct {
 	Name     string   `yaml:"name"`
-	Command  string   `yaml:"command"`
+	Command  []string `yaml:"command"`
 	Schedule Schedule `yaml:"schedule"`
 }
 
@@ -27,9 +27,12 @@ var taskMap = make(TaskMap)
 func (task Task) Execute() {
 	go func() {
 		taskLastRunTime[task.Name] = time.Now().Unix()
-		err := syscall.Exec(task.Command, nil, nil)
+		log.Println("Running:", task.Command)
+		cmd := exec.Command(task.Command[0], task.Command[1:]...)
+		err := cmd.Run()
 		if err != nil {
-			log.Println(fmt.Errorf("Running command %s failed: %v", task.Command, err))
+			log.Println(fmt.Errorf("Running command %s failed", task.Command))
+			log.Println(err)
 		}
 	}()
 }

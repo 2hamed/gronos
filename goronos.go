@@ -13,16 +13,16 @@ import (
 var tasks scheduler.Tasks
 
 func main() {
+
 	path := os.Args[1]
 
 	var err error
-
 	tasks, err = scheduler.LoadTasksFromDir(path)
 	if err != nil {
 		panic(err)
 	}
 
-	ticker := time.Tick(5 * time.Second)
+	ticker := time.Tick(1 * time.Second)
 
 	go looper(tasks, ticker)
 
@@ -30,6 +30,8 @@ func main() {
 
 	r.HandleFunc("/", homeHandler)
 	http.Handle("/", r)
+
+	fmt.Println("Goronos engine is running and the API server is listening on port 8080...")
 
 	err = http.ListenAndServe(":8080", nil)
 
