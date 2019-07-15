@@ -43,11 +43,26 @@ func (h hour) String() string {
 }
 
 func (h hour) IsAfter(t *time.Time) bool {
-	return h.hour >= t.Hour() && h.minute >= t.Minute()
+	if h.hour == t.Hour() && h.minute >= t.Minute() {
+		return true
+	}
+
+	if h.hour > t.Hour() {
+		return true
+	}
+
+	return false
 }
 
 func (h hour) IsBefore(t *time.Time) bool {
-	return h.hour <= t.Hour() && h.minute <= t.Minute()
+	if h.hour == t.Hour() && h.minute <= t.Minute() {
+		return true
+	}
+
+	if h.hour < t.Hour() {
+		return true
+	}
+	return false
 }
 
 func (h hour) Hour() int {
