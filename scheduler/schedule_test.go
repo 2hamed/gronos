@@ -26,7 +26,6 @@ months:
  - 3
  - october
 except:
- every: "3:45"
  weekdays:
   - wed
   - tue

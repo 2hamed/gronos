@@ -52,6 +52,8 @@ func (task Task) IsTime(anchor *time.Time) bool {
 
 	result = result && task.Schedule.checkMonths(anchor)
 
+	result = result && task.Schedule.checkBetweens(anchor)
+
 	return result && !task.shouldSkip(anchor)
 }
 
@@ -97,6 +99,10 @@ func (task Task) shouldSkip(anchor *time.Time) bool {
 	}
 
 	if except.checkMonths(anchor) {
+		return true
+	}
+
+	if except.checkBetweens(anchor) {
 		return true
 	}
 

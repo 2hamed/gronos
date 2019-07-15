@@ -15,6 +15,7 @@ type Schedule struct {
 	weekdays  []string     `yaml:"weekdays"`
 	monthdays []int        `yaml:"monthdays"`
 	at        []string     `yaml:"at"`
+	betweens  []Between
 
 	except *Schedule `yaml:"except"`
 }
@@ -84,7 +85,25 @@ func (s *Schedule) populate(m map[interface{}]interface{}) error {
 		}
 	}
 
+	if b, ok := m["between"]; ok {
+		betweens := b.([]interface{})
+		s.betweens = make([]Between, 0)
+		if betweens != nil {
+			for _, v := range betweens {
+				b, err := parseBetween(v.(string))
+				if err != nil {
+					return err
+				}
+				s.betweens = append(s.betweens, b)
+			}
+		}
+	}
 	return nil
+}
+
+// Betweens returns betweens
+func (s Schedule) Betweens() []Between {
+	return s.betweens
 }
 
 // At returns an array of time.Time struct in which only the Hour and Minute are important. The rest of the properties are arbitrary
@@ -190,4 +209,13 @@ func (s Schedule) checkMonths(anchor *time.Time) bool {
 		return true
 	}
 	return MonthSliceContains(s.Months(), anchor.Month())
+}
+
+func (s Schedule) checkBetweens(anchor *time.Time) bool {
+	for _, b := range s.Betweens() {
+		if !b.IsInside(anchor) {
+			return false
+		}
+	}
+	return true
 }
