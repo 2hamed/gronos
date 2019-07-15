@@ -31,7 +31,6 @@ schedule:
     - 5:13
     - 15:34
   except:
-    every: "3:45"
     weekdays:
       - thu
       - tue
