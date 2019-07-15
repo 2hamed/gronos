@@ -9,7 +9,7 @@ import (
 
 var taskYaml = `
 name: command1
-command: /path/to/command1
+command: ["/path/to/command1"]
 schedule:
   every: "2:30"
   months:

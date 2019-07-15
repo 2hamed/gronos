@@ -33,6 +33,11 @@ func NewHour(h, m int) (Hour, error) {
 	}, nil
 }
 
+func newHourNoErr(h, m int) Hour {
+	hour, _ := NewHour(h, m)
+	return hour
+}
+
 type hour struct {
 	hour   int
 	minute int
