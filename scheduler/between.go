@@ -20,7 +20,7 @@ func (b Between) String() string {
 
 // IsInside checks whether a given time.Time is inside the period or not
 func (b Between) IsInside(t *time.Time) bool {
-	return b.from.IsAfter(t) && b.to.IsBefore(t)
+	return b.from.IsBefore(t) && b.to.IsAfter(t)
 }
 
 func parseBetween(str string) (Between, error) {
