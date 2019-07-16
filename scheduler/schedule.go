@@ -183,39 +183,42 @@ func (s Schedule) Months() []time.Month {
 	return s.months
 }
 
-func (s Schedule) checkWeekday(anchor *time.Time) bool {
+func (s Schedule) checkWeekday(anchor *time.Time) (bool, empty bool) {
 	if len(s.Weekdays()) == 0 {
-		return true
+		return true, true
 	}
-	return WeekDaySliceContains(s.Weekdays(), anchor.Weekday())
+	return WeekDaySliceContains(s.Weekdays(), anchor.Weekday()), false
 }
 
-func (s Schedule) checkMonthdays(anchor *time.Time) bool {
+func (s Schedule) checkMonthdays(anchor *time.Time) (bool, empty bool) {
 	if len(s.Monthdays()) == 0 {
-		return true
+		return true, true
 	}
-	return IntSliceContains(s.Monthdays(), anchor.Day())
+	return IntSliceContains(s.Monthdays(), anchor.Day()), false
 }
 
-func (s Schedule) checkAt(anchor *time.Time) bool {
+func (s Schedule) checkAt(anchor *time.Time) (bool, empty bool) {
 	if len(s.At()) == 0 {
-		return true
+		return true, true
 	}
-	return TimeSliceContainsHoursMintues(s.At(), *anchor)
+	return TimeSliceContainsHoursMintues(s.At(), *anchor), false
 }
 
-func (s Schedule) checkMonths(anchor *time.Time) bool {
+func (s Schedule) checkMonths(anchor *time.Time) (bool, empty bool) {
 	if len(s.Months()) == 0 {
-		return true
+		return true, true
 	}
-	return MonthSliceContains(s.Months(), anchor.Month())
+	return MonthSliceContains(s.Months(), anchor.Month()), false
 }
 
-func (s Schedule) checkBetweens(anchor *time.Time) bool {
+func (s Schedule) checkBetweens(anchor *time.Time) (bool, empty bool) {
+	if len(s.Betweens()) == 0 {
+		return true, true
+	}
 	for _, b := range s.Betweens() {
 		if !b.IsInside(anchor) {
-			return false
+			return false, false
 		}
 	}
-	return true
+	return true, false
 }

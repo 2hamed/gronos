@@ -28,6 +28,11 @@ func TestParseHour(t *testing.T) {
 		t.Error("err must not be nil here")
 	}
 
+	h, err = parseHour("5:a")
+	if err == nil {
+		t.Error("err must not be nil here")
+	}
+
 	h, err = parseHour("30:25")
 	if err == nil {
 		t.Error("err must not be nil here")

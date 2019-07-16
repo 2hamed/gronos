@@ -44,15 +44,20 @@ func (task Task) IsTime(anchor *time.Time) bool {
 
 	result = task.checkEvery(anchor)
 
-	result = result && task.Schedule.checkWeekday(anchor)
+	weekday, _ := task.Schedule.checkWeekday(anchor)
+	result = result && weekday
 
-	result = result && task.Schedule.checkMonthdays(anchor)
+	monthday, _ := task.Schedule.checkMonthdays(anchor)
+	result = result && monthday
 
-	result = result && task.Schedule.checkAt(anchor)
+	at, _ := task.Schedule.checkAt(anchor)
+	result = result && at
 
-	result = result && task.Schedule.checkMonths(anchor)
+	months, _ := task.Schedule.checkMonths(anchor)
+	result = result && months
 
-	result = result && task.Schedule.checkBetweens(anchor)
+	between, _ := task.Schedule.checkBetweens(anchor)
+	result = result && between
 
 	return result && !task.shouldSkip(anchor)
 }
@@ -86,23 +91,26 @@ func (task Task) shouldSkip(anchor *time.Time) bool {
 		return false
 	}
 
-	if except.checkMonthdays(anchor) {
+	// `e` here inidicates whether the criteria was empty or not
+	// and if it's empty it should not be considered a valid "true" for skipping the schedule
+
+	if m, e := except.checkMonthdays(anchor); m && !e {
 		return true
 	}
 
-	if except.checkWeekday(anchor) {
+	if w, e := except.checkWeekday(anchor); w && !e {
 		return true
 	}
 
-	if except.checkAt(anchor) {
+	if a, e := except.checkAt(anchor); a && !e {
 		return true
 	}
 
-	if except.checkMonths(anchor) {
+	if m, e := except.checkMonths(anchor); m && !e {
 		return true
 	}
 
-	if except.checkBetweens(anchor) {
+	if b, e := except.checkBetweens(anchor); b && !e {
 		return true
 	}
 

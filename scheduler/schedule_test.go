@@ -71,13 +71,13 @@ func TestScheduleAt(t *testing.T) {
 
 	anchor := time.Date(1, 1, 1, 5, 13, 0, 0, time.Local)
 
-	if !schedule.checkAt(&anchor) {
+	if a, _ := schedule.checkAt(&anchor); !a {
 		t.Error("checkAt failed to recognize")
 	}
 
 	anchor = time.Date(1, 1, 1, 5, 14, 0, 0, time.Local)
 
-	if schedule.checkAt(&anchor) {
+	if a, _ := schedule.checkAt(&anchor); a {
 		t.Error("checkAt failed to recognize")
 	}
 }
@@ -88,19 +88,19 @@ func TestScheduleMonths(t *testing.T) {
 
 	june := time.Date(2019, 6, 15, 5, 13, 0, 0, time.Local)
 
-	if !schedule.checkMonths(&june) {
+	if m, _ := schedule.checkMonths(&june); !m {
 		t.Error("failed to recognize June")
 	}
 
 	october := time.Date(2019, 10, 15, 5, 13, 0, 0, time.Local)
 
-	if !schedule.checkMonths(&october) {
+	if m, _ := schedule.checkMonths(&october); !m {
 		t.Error("failed to recognize October")
 	}
 
 	january := time.Date(2019, 1, 15, 5, 13, 0, 0, time.Local)
 
-	if schedule.checkMonths(&january) {
+	if m, _ := schedule.checkMonths(&january); m {
 		t.Error("false positive in months")
 	}
 }
@@ -113,11 +113,11 @@ func TestScheduleMothdays(t *testing.T) {
 
 	twelfth := time.Date(2019, 6, 12, 5, 13, 0, 0, time.Local)
 
-	if !schedule.checkMonthdays(&thirteenth) {
+	if md, _ := schedule.checkMonthdays(&thirteenth); !md {
 		t.Error("failed recognizing 13th")
 	}
 
-	if schedule.checkMonthdays(&twelfth) {
+	if md, _ := schedule.checkMonthdays(&twelfth); md {
 		t.Error("false positive in recognizing 12th")
 	}
 }
@@ -128,13 +128,13 @@ func TestScheduleWeekdays(t *testing.T) {
 
 	saturday := time.Date(2019, 7, 13, 5, 13, 0, 0, time.Local) // 13th july
 
-	if !schedule.checkWeekday(&saturday) {
+	if wd, _ := schedule.checkWeekday(&saturday); !wd {
 		t.Error("failed to recognize saturday")
 	}
 
 	friday := time.Date(2019, 7, 19, 5, 13, 0, 0, time.Local) // 19th july
 
-	if schedule.checkWeekday(&friday) {
+	if wd, _ := schedule.checkWeekday(&friday); wd {
 		t.Error("false positive in recognizing weekday")
 	}
 
