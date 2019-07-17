@@ -62,10 +62,102 @@ func TestTaskIsTime(t *testing.T) {
 	}
 
 	// testing the Except part
+	anchor = time.Date(2019, time.July, 13, 3, 0, 0, 0, time.Local) // 13th jul 2019 3:0
+
+	if task.IsTime(&anchor) {
+		t.Error("false positive, this should be skipped")
+	}
+
 	anchor = time.Date(2019, time.July, 18, 3, 0, 0, 0, time.Local) // 18th jul 2019 3:0
 
 	if task.IsTime(&anchor) {
-		t.Error("false positive, this should be excepted")
+		t.Error("false positive, this should be skipped")
 	}
 
+}
+
+func TestExceptAt(t *testing.T) {
+	var task Task
+
+	yamlStr = `
+name: command1
+command: ["/path/to/command1"]
+schedule:
+  every: "1"
+  except:
+    at:
+      - 5:15`
+	err := yaml.Unmarshal([]byte(yamlStr), &task)
+
+	if err != nil {
+		t.Error("the yaml is invalid", err)
+	}
+	anchor := time.Date(2019, time.July, 18, 5, 15, 0, 0, time.Local) // 18th jul 2019 3:0
+
+	if task.IsTime(&anchor) {
+		t.Error("false positive, this should be skipped")
+	}
+}
+
+func TestExceptMonths(t *testing.T) {
+	var task Task
+
+	yamlStr = `
+name: command1
+command: ["/path/to/command1"]
+schedule:
+  at:
+    - 5:15
+  except:
+    months:
+      - jul`
+	err := yaml.Unmarshal([]byte(yamlStr), &task)
+
+	if err != nil {
+		t.Error("the yaml is invalid", err)
+	}
+	anchor := time.Date(2019, time.July, 18, 5, 15, 0, 0, time.Local) // 18th jul 2019 3:0
+
+	if task.IsTime(&anchor) {
+		t.Error("false positive, this should be skipped")
+	}
+}
+
+func TestBetweens(t *testing.T) {
+	var task Task
+
+	yamlStr = `
+name: command1
+command: ["/path/to/command1"]
+schedule:
+  between:
+    - 5-6:30
+  except:
+    at:
+      - 5:15
+    between:
+      - 6:15-7`
+	err := yaml.Unmarshal([]byte(yamlStr), &task)
+
+	if err != nil {
+		t.Error("the yaml is invalid", err)
+	}
+
+	anchor := time.Date(2019, time.July, 18, 5, 30, 0, 0, time.Local) // 18th jul 2019 3:0
+
+	if !task.IsTime(&anchor) {
+		t.Error("false negative")
+	}
+
+	anchor = time.Date(2019, time.July, 18, 5, 15, 0, 0, time.Local) // 18th jul 2019 3:0
+
+	if task.IsTime(&anchor) {
+		t.Error("false positive")
+  }
+  
+  anchor = time.Date(2019, time.July, 18, 6, 25, 0, 0, time.Local) // 18th jul 2019 3:0
+
+	if task.IsTime(&anchor) {
+		t.Error("false positive")
+	}
 }

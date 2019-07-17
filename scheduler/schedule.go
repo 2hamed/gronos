@@ -161,8 +161,8 @@ func (s Schedule) Except() *Schedule {
 // Every return the number of seconds at which the task should be run
 func (s Schedule) Every() (int64, error) {
 	hm := strings.Split(s.every, ":")
-	if len(hm) == 0 {
-		return 0, errors.New("no `every` set")
+	if len(hm) > 2 {
+		return 0, errors.New("invalid `every` set")
 	}
 	hour, _ := strconv.Atoi(hm[0])
 	var min int
