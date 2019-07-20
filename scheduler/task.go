@@ -20,8 +20,14 @@ type Task struct {
 	Schedule Schedule `yaml:"schedule"`
 }
 
+var tasks Tasks
 var taskLastRunTime = make(map[string]int64)
 var taskMap = make(TaskMap)
+
+// GetTasks returns the currently loaded Tasks
+func GetTasks() Tasks {
+	return tasks
+}
 
 // Execute executes the Task Command inside a separate goroutine
 func (task Task) Execute() {
