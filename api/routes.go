@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -16,12 +17,9 @@ func RegisterRoutes(router *mux.Router) {
 
 }
 func homeHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(r.Context().Value(key))
 
-	output := []byte("")
-
-	for _, v := range scheduler.GetTasks() {
-		output = append(output, []byte(fmt.Sprintf("%v\n", v))...)
-	}
+	output, _ := json.Marshal(scheduler.GetTasks())
 
 	w.Write(output)
 }
