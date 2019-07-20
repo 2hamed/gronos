@@ -1,7 +1,6 @@
 package scheduler
 
 import (
-	"fmt"
 	"os"
 	"time"
 )
@@ -23,7 +22,6 @@ func init() {
 func looper(tasks Tasks, ticker <-chan time.Time) {
 	for {
 		t := <-ticker
-		fmt.Println("LOOP")
 		for _, task := range tasks {
 			if task.IsTime(&t) {
 				task.Execute()

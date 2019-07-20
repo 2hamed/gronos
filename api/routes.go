@@ -10,7 +10,10 @@ import (
 
 // RegisterRoutes regiters the api endpoints
 func RegisterRoutes(router *mux.Router) {
+
 	router.HandleFunc("/", homeHandler)
+	router.Use(jsonMiddleWare)
+
 }
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 
