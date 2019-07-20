@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goronos-dpl
+  labels:
+    app: goronos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: goronos
+  template:
+    metadata:
+      labels:
+        app: goronos
+    spec:
+      containers:
+        - name: goronos
+          image: 2hamed/goronos
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: schedule
+              mountPath: /root
+      volumes:
+        - name: schedule
+          configMap:
+            name: schedule

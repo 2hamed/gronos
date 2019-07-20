@@ -153,9 +153,9 @@ schedule:
 
 	if task.IsTime(&anchor) {
 		t.Error("false positive")
-  }
-  
-  anchor = time.Date(2019, time.July, 18, 6, 25, 0, 0, time.Local) // 18th jul 2019 3:0
+	}
+
+	anchor = time.Date(2019, time.July, 18, 6, 25, 0, 0, time.Local) // 18th jul 2019 3:0
 
 	if task.IsTime(&anchor) {
 		t.Error("false positive")

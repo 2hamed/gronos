@@ -1,12 +1,18 @@
 FROM golang:1.12 AS build
 
-COPY . /go/src/github.com/2hamed/goronos
+COPY . /app
 
-RUN go install github.com/2hamed/goronos
+WORKDIR /app
+
+RUN go mod tidy
+
+RUN go test ./scheduler
+
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o goronos .
 
 FROM alpine
 
-COPY --from=build /go/bin/goronos /usr/bin
+COPY --from=build /app/goronos /usr/bin
 
 COPY ./commands/one.yaml /root/
 
