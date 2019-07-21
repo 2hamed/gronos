@@ -5,11 +5,13 @@ import (
 	"net/http"
 
 	"github.com/2hamed/goronos/api"
-	_ "github.com/2hamed/goronos/scheduler"
+	"github.com/2hamed/goronos/scheduler"
 	"github.com/gorilla/mux"
 )
 
 func main() {
+
+	scheduler.StartLooper()
 
 	r := mux.NewRouter()
 

@@ -5,13 +5,8 @@ import (
 	"time"
 )
 
-var _testing = false
-
-func init() {
-
-	if _testing {
-		return
-	}
+// StartLooper starts the main looper for tasks
+func StartLooper() {
 
 	path := os.Args[1]
 
