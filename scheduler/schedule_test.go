@@ -45,19 +45,19 @@ func TestScheduleUnmarshal(t *testing.T) {
 		return
 	}
 
-	every, err := schedule.Every()
+	every := schedule.Every
 
-	if every != 2*3600+30*60 || err != nil {
+	if every != 2*3600+30*60 {
 		t.Error(errors.Wrap(err, "wrong value for `every`"))
 	}
 
-	weekdays := schedule.Weekdays()
+	weekdays := schedule.Weekdays
 
 	if !reflect.DeepEqual(weekdays, []time.Weekday{time.Saturday, time.Monday, time.Tuesday}) {
 		t.Error("wrong value for `weekdays`")
 	}
 
-	monthdays := schedule.Monthdays()
+	monthdays := schedule.Monthdays
 
 	if !reflect.DeepEqual(monthdays, []int{13}) {
 		t.Error("wrong value for `monthdays`")

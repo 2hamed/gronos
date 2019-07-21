@@ -3,7 +3,6 @@ package scheduler
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -11,14 +10,14 @@ import (
 
 // Schedule is struct containing when the task should be run
 type Schedule struct {
-	months    []time.Month `yaml:"months"`
-	every     string       `yaml:"every"`
-	weekdays  []string     `yaml:"weekdays"`
-	monthdays []int        `yaml:"monthdays"`
-	at        []string     `yaml:"at"`
-	betweens  []Between
+	Months    []time.Month
+	Every     int
+	Weekdays  []time.Weekday
+	Monthdays []int
+	At        []Hour
+	Betweens  []Between
 
-	except *Schedule `yaml:"except"`
+	Except *Schedule `yaml:"except"`
 }
 
 // UnmarshalYAML custom YAML unmarshalling
@@ -38,15 +37,13 @@ func (s *Schedule) UnmarshalYAML(unmarshal func(interface{}) error) error {
 func (s *Schedule) MarshalJSON() ([]byte, error) {
 	mapping := make(map[string]interface{})
 
-	if v := s.Months(); v != nil {
+	if v := s.Months; v != nil {
 		mapping["months"] = v
 	}
 
-	if v, err := s.Every(); err == nil {
-		mapping["every"] = v
-	}
+	mapping["every"] = s.Every
 
-	if v := s.Weekdays(); len(v) > 0 {
+	if v := s.Weekdays; len(v) > 0 {
 		mapping["weekdays"] = v
 	}
 
@@ -56,96 +53,90 @@ func (s *Schedule) MarshalJSON() ([]byte, error) {
 func (s *Schedule) populate(m map[interface{}]interface{}) error {
 
 	if v, ok := m["every"]; ok {
-		s.every = v.(string)
+		s.Every, _ = parseEvery(v.(string))
 	}
 
 	if v, ok := m["weekdays"]; ok {
 		wds := v.([]interface{})
-		for _, v := range wds {
-			s.weekdays = append(s.weekdays, v.(string))
+		weekdays := make([]string, len(wds))
+		for i, v := range wds {
+			weekdays[i] = v.(string)
 		}
+		s.Weekdays = parseWeekdays(weekdays)
 	}
 
 	if v, ok := m["monthdays"]; ok {
 		mds := v.([]interface{})
 		for _, v := range mds {
-			s.monthdays = append(s.monthdays, v.(int))
+			s.Monthdays = append(s.Monthdays, v.(int))
 		}
 	}
 
 	if v, ok := m["at"]; ok {
 		ats := v.([]interface{})
-		for _, v := range ats {
-			if str, ok := v.(string); ok {
-				s.at = append(s.at, str)
-			} else if intg, ok := v.(int); ok {
-				s.at = append(s.at, strconv.Itoa(intg))
-			} else {
-				return fmt.Errorf("invalid value for `at`: %v", v)
-
-			}
-		}
+		s.At = parseAt(ats)
 	}
 
 	exc := m["except"]
 	if exc != nil {
 		var except = Schedule{}
 		except.populate(exc.(map[interface{}]interface{}))
-		s.except = &except
+		s.Except = &except
 	}
 
 	months := m["months"]
 	if months != nil {
-		s.months = make([]time.Month, 0)
+		s.Months = make([]time.Month, 0)
 		for _, v := range months.([]interface{}) {
 			m, err := ParseMonth(v)
 			if err == nil {
-				s.months = append(s.months, m)
+				s.Months = append(s.Months, m)
 			}
 		}
 	}
 
 	if b, ok := m["between"]; ok {
 		betweens := b.([]interface{})
-		s.betweens = make([]Between, 0)
+		s.Betweens = make([]Between, 0)
 		if betweens != nil {
 			for _, v := range betweens {
 				b, err := parseBetween(v.(string))
 				if err != nil {
 					return err
 				}
-				s.betweens = append(s.betweens, b)
+				s.Betweens = append(s.Betweens, b)
 			}
 		}
 	}
 	return nil
 }
 
-// Betweens returns betweens
-func (s Schedule) Betweens() []Between {
-	return s.betweens
-}
-
 // At returns an array of time.Time struct in which only the Hour and Minute are important. The rest of the properties are arbitrary
-func (s Schedule) At() []time.Time {
-	times := make([]time.Time, len(s.at))
-	for i, v := range s.at {
-		hm := strings.Split(v, ":")
+func parseAt(ats []interface{}) []Hour {
+	times := make([]Hour, len(ats))
+	var s string
+	var isString bool
+	for i, v := range ats {
+		if s, isString = v.(string); !isString {
+			intg := v.(int)
+			s = strconv.Itoa(intg)
+		}
+		hm := strings.Split(s, ":")
 		hour, _ := strconv.Atoi(hm[0])
 		var min int
 		if len(hm) > 1 {
 			min, _ = strconv.Atoi(hm[1])
 		}
-		times[i] = time.Date(1, 1, 1, hour, min, 0, 0, time.Local)
+		times[i], _ = NewHour(hour, min)
 	}
 
 	return times
 }
 
 // Weekdays returns an array of time.Weekday
-func (s Schedule) Weekdays() []time.Weekday {
-	weekdays := make([]time.Weekday, len(s.weekdays))
-	for i, wd := range s.weekdays {
+func parseWeekdays(wdays []string) []time.Weekday {
+	weekdays := make([]time.Weekday, len(wdays))
+	for i, wd := range wdays {
 		switch wd {
 		case "wed", "wedensday":
 			weekdays[i] = time.Wednesday
@@ -173,14 +164,9 @@ func (s Schedule) Weekdays() []time.Weekday {
 	return weekdays
 }
 
-// Except returns the Schedule struct denoting when not to run this task
-func (s Schedule) Except() *Schedule {
-	return s.except
-}
-
 // Every return the number of seconds at which the task should be run
-func (s Schedule) Every() (int64, error) {
-	hm := strings.Split(s.every, ":")
+func parseEvery(every string) (int, error) {
+	hm := strings.Split(every, ":")
 	if len(hm) > 2 {
 		return 0, errors.New("invalid `every` set")
 	}
@@ -190,55 +176,42 @@ func (s Schedule) Every() (int64, error) {
 		min, _ = strconv.Atoi(hm[1])
 	}
 
-	return int64(hour*3600 + min*60), nil
-}
-
-// Monthdays returns the month days this schedule shoud run on
-func (s Schedule) Monthdays() []int {
-	return s.monthdays
-}
-
-// Months returns an array of time.Month
-func (s Schedule) Months() []time.Month {
-	if s.months == nil {
-		return []time.Month{}
-	}
-	return s.months
+	return hour*3600 + min*60, nil
 }
 
 func (s Schedule) checkWeekday(anchor *time.Time) (bool, empty bool) {
-	if len(s.Weekdays()) == 0 {
+	if len(s.Weekdays) == 0 {
 		return true, true
 	}
-	return WeekDaySliceContains(s.Weekdays(), anchor.Weekday()), false
+	return WeekDaySliceContains(s.Weekdays, anchor.Weekday()), false
 }
 
 func (s Schedule) checkMonthdays(anchor *time.Time) (bool, empty bool) {
-	if len(s.Monthdays()) == 0 {
+	if len(s.Monthdays) == 0 {
 		return true, true
 	}
-	return IntSliceContains(s.Monthdays(), anchor.Day()), false
+	return IntSliceContains(s.Monthdays, anchor.Day()), false
 }
 
 func (s Schedule) checkAt(anchor *time.Time) (bool, empty bool) {
-	if len(s.At()) == 0 {
+	if len(s.At) == 0 {
 		return true, true
 	}
-	return TimeSliceContainsHoursMintues(s.At(), *anchor), false
+	return HourSliceContainsHoursMintues(s.At, *anchor), false
 }
 
 func (s Schedule) checkMonths(anchor *time.Time) (bool, empty bool) {
-	if len(s.Months()) == 0 {
+	if len(s.Months) == 0 {
 		return true, true
 	}
-	return MonthSliceContains(s.Months(), anchor.Month()), false
+	return MonthSliceContains(s.Months, anchor.Month()), false
 }
 
 func (s Schedule) checkBetweens(anchor *time.Time) (bool, empty bool) {
-	if len(s.Betweens()) == 0 {
+	if len(s.Betweens) == 0 {
 		return true, true
 	}
-	for _, b := range s.Betweens() {
+	for _, b := range s.Betweens {
 		if !b.IsInside(anchor) {
 			return false, false
 		}

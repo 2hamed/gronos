@@ -58,6 +58,21 @@ func TimeSliceContainsHoursMintues(haystack []time.Time, n time.Time) bool {
 	return false
 }
 
+// HourSliceContainsHoursMintues checks an instance of time inside a slice only for the hour and minute
+func HourSliceContainsHoursMintues(haystack []Hour, n time.Time) bool {
+	if haystack == nil {
+		return false
+	}
+
+	for _, t := range haystack {
+		if t.Hour() == n.Hour() && t.Minute() == n.Minute() {
+			return true
+		}
+	}
+
+	return false
+}
+
 // MonthSliceContains hecks a value `n` exists in slice `haystack`
 func MonthSliceContains(haystack []time.Month, n time.Month) bool {
 	if haystack == nil {

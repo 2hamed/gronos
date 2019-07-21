@@ -5,7 +5,14 @@ import (
 	"time"
 )
 
+var _testing = false
+
 func init() {
+
+	if _testing {
+		return
+	}
+
 	path := os.Args[1]
 
 	var err error

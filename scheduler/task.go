@@ -72,16 +72,14 @@ func (task Task) checkEvery(anchor *time.Time) bool {
 
 	result := false
 
-	every, err := task.Schedule.Every()
+	every := task.Schedule.Every
 
-	if err == nil {
-		if lastTime, ok := taskLastRunTime[task.Name]; ok {
-			if diff := time.Now().Unix() - lastTime; diff > every {
-				result = true
-			}
-		} else {
+	if lastTime, ok := taskLastRunTime[task.Name]; ok {
+		if diff := time.Now().Unix() - lastTime; int(diff) > every {
 			result = true
 		}
+	} else {
+		result = true
 	}
 
 	return result
@@ -91,7 +89,7 @@ func (task Task) shouldSkip(anchor *time.Time) bool {
 
 	schedule := task.Schedule
 
-	except := schedule.Except()
+	except := schedule.Except
 
 	if except == nil {
 		return false
