@@ -161,3 +161,34 @@ schedule:
 		t.Error("false positive")
 	}
 }
+
+func TestRepeatingTask(t *testing.T) {
+	var task Task
+
+	yamlStr = `
+name: command1
+command: ["echo", "hello", ">", "/dev/null"]
+schedule:
+  every: 0:30`
+	err := yaml.Unmarshal([]byte(yamlStr), &task)
+
+	if err != nil {
+		t.Error("the yaml is invalid", err)
+	}
+
+	now := time.Now()
+
+	task.Execute()
+
+	now = now.Add(5 * time.Minute)
+
+	if task.IsTime(&now) {
+		t.Error("it's still not time!")
+	}
+
+	now = now.Add(30 * time.Minute)
+
+	if !task.IsTime(&now) {
+		t.Error("it's time!")
+	}
+}

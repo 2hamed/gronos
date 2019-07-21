@@ -31,16 +31,14 @@ func GetTasks() Tasks {
 
 // Execute executes the Task Command inside a separate goroutine
 func (task Task) Execute() {
-	go func() {
-		taskLastRunTime[task.Name] = time.Now().Unix()
-		log.Println("Running:", task.Command)
-		cmd := exec.Command(task.Command[0], task.Command[1:]...)
-		err := cmd.Run()
-		if err != nil {
-			log.Println(fmt.Errorf("Running command %s failed", task.Command))
-			log.Println(err)
-		}
-	}()
+	taskLastRunTime[task.Name] = time.Now().Unix()
+	log.Println("Running:", task.Command)
+	cmd := exec.Command(task.Command[0], task.Command[1:]...)
+	err := cmd.Run()
+	if err != nil {
+		log.Println(fmt.Errorf("Running command %s failed", task.Command))
+		log.Println(err)
+	}
 }
 
 // IsTime returns `true` if it's time to run this task
@@ -75,7 +73,7 @@ func (task Task) checkEvery(anchor *time.Time) bool {
 	every := task.Schedule.Every
 
 	if lastTime, ok := taskLastRunTime[task.Name]; ok {
-		if diff := time.Now().Unix() - lastTime; int(diff) > every {
+		if diff := anchor.Unix() - lastTime; int(diff) > every {
 			result = true
 		}
 	} else {
