@@ -34,11 +34,13 @@ func (task Task) Execute() {
 	taskLastRunTime[task.Name] = time.Now().Unix()
 	log.Println("Running:", task.Command)
 	cmd := exec.Command(task.Command[0], task.Command[1:]...)
-	err := cmd.Run()
-	if err != nil {
-		log.Println(fmt.Errorf("Running command %s failed", task.Command))
-		log.Println(err)
-	}
+	go func(cmd *exec.Cmd) {
+		err := cmd.Run()
+		if err != nil {
+			log.Println(fmt.Errorf("Running command %s failed", task.Command))
+			log.Println(err)
+		}
+	}(cmd)
 }
 
 // IsTime returns `true` if it's time to run this task
