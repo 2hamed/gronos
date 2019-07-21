@@ -1,6 +1,7 @@
 package scheduler
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -16,6 +17,15 @@ type Between struct {
 
 func (b Between) String() string {
 	return fmt.Sprintf("%s-%s", b.from.String(), b.to.String())
+}
+
+func (b Between) MarshalJSON() ([]byte, error) {
+	data := make(map[string]Hour)
+
+	data["from"] = b.from
+	data["to"] = b.to
+
+	return json.Marshal(data)
 }
 
 // IsInside checks whether a given time.Time is inside the period or not

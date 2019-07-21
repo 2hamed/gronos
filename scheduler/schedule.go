@@ -1,7 +1,7 @@
 package scheduler
 
 import (
-	"encoding/json"
+	// "encoding/json"
 	"errors"
 	"strconv"
 	"strings"
@@ -10,14 +10,13 @@ import (
 
 // Schedule is struct containing when the task should be run
 type Schedule struct {
-	Months    []time.Month
-	Every     int
-	Weekdays  []time.Weekday
-	Monthdays []int
-	At        []Hour
-	Betweens  []Between
-
-	Except *Schedule `yaml:"except"`
+	Months    []time.Month   `json:"months,omitempty"`
+	Every     int            `json:"every"`
+	Weekdays  []time.Weekday `json:"weekdays,omitempty"`
+	Monthdays []int          `json:"monthdays,omitempty"`
+	At        []Hour         `json:"at,omitempty"`
+	Betweens  []Between      `json:"betweens,omitempty"`
+	Except    *Schedule      `json:"except,omitempty"`
 }
 
 // UnmarshalYAML custom YAML unmarshalling
@@ -33,22 +32,22 @@ func (s *Schedule) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	return s.populate(m)
 }
 
-// MarshalJSON is the custom json marshalling of the Schedule struct
-func (s *Schedule) MarshalJSON() ([]byte, error) {
-	mapping := make(map[string]interface{})
+// // MarshalJSON is the custom json marshalling of the Schedule struct
+// func (s *Schedule) MarshalJSON() ([]byte, error) {
+// 	mapping := make(map[string]interface{})
 
-	if v := s.Months; v != nil {
-		mapping["months"] = v
-	}
+// 	if v := s.Months; v != nil {
+// 		mapping["months"] = v
+// 	}
 
-	mapping["every"] = s.Every
+// 	mapping["every"] = s.Every
 
-	if v := s.Weekdays; len(v) > 0 {
-		mapping["weekdays"] = v
-	}
+// 	if v := s.Weekdays; len(v) > 0 {
+// 		mapping["weekdays"] = v
+// 	}
 
-	return json.Marshal(mapping)
-}
+// 	return json.Marshal(mapping)
+// }
 
 func (s *Schedule) populate(m map[interface{}]interface{}) error {
 

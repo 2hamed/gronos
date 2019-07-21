@@ -1,6 +1,7 @@
 package scheduler
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -45,6 +46,15 @@ type hour struct {
 
 func (h hour) String() string {
 	return fmt.Sprintf("%d:%02d", h.hour, h.minute)
+}
+
+func (h hour) MarshalJSON() ([]byte, error) {
+	data := make(map[string]int)
+
+	data["hour"] = h.Hour()
+	data["minute"] = h.Minute()
+
+	return json.Marshal(data)
 }
 
 func (h hour) IsAfter(t *time.Time) bool {
