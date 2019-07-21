@@ -17,11 +17,11 @@ jobs:
     #### expecting it in the form of
     ####   /go/src/github.com/circleci/go-tool
     ####   /go/src/bitbucket.org/circleci/go-tool
-    working_directory: /go/src/github.com/2hamed/goronos
+    working_directory: /app
     steps:
       - checkout
 
       # specify any bash command here prefixed with `run: `
-      - run: go get -u -v
+      - run: go mod tidy
       - run: go test -race -coverprofile=coverage.txt -covermode=atomic ./scheduler
       - run: bash <(curl -s https://codecov.io/bash)
