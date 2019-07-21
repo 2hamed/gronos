@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v2"
 )
 
@@ -45,34 +46,20 @@ func TestTaskIsTime(t *testing.T) {
 
 	err := yaml.Unmarshal([]byte(taskYaml), &task)
 
-	if err != nil {
-		t.Error("the yaml is invalid", err)
-	}
+	assert.Nil(t, err, "the yaml is invalid")
 
 	anchor := time.Date(2019, time.June, 1, 3, 0, 0, 0, time.Local) // 1st jun 2019 3:0
-
-	if !task.IsTime(&anchor) {
-		t.Error("false negative")
-	}
+	assert.True(t, task.IsTime(&anchor))
 
 	anchor = time.Date(2019, time.June, 2, 3, 0, 0, 0, time.Local) // 2nd jun 2019 3:0
-
-	if task.IsTime(&anchor) {
-		t.Error("false positive")
-	}
+	assert.False(t, task.IsTime(&anchor))
 
 	// testing the Except part
 	anchor = time.Date(2019, time.July, 13, 3, 0, 0, 0, time.Local) // 13th jul 2019 3:0
-
-	if task.IsTime(&anchor) {
-		t.Error("false positive, this should be skipped")
-	}
+	assert.False(t, task.IsTime(&anchor))
 
 	anchor = time.Date(2019, time.July, 18, 3, 0, 0, 0, time.Local) // 18th jul 2019 3:0
-
-	if task.IsTime(&anchor) {
-		t.Error("false positive, this should be skipped")
-	}
+	assert.False(t, task.IsTime(&anchor))
 
 }
 
@@ -112,15 +99,10 @@ schedule:
     months:
       - jul`
 	err := yaml.Unmarshal([]byte(yamlStr), &task)
+	assert.Nil(t, err, "the yaml is invalid")
 
-	if err != nil {
-		t.Error("the yaml is invalid", err)
-	}
 	anchor := time.Date(2019, time.July, 18, 5, 15, 0, 0, time.Local) // 18th jul 2019 3:0
-
-	if task.IsTime(&anchor) {
-		t.Error("false positive, this should be skipped")
-	}
+	assert.False(t, task.IsTime(&anchor))
 }
 
 func TestBetweens(t *testing.T) {
@@ -138,28 +120,17 @@ schedule:
     between:
       - 6:15-7`
 	err := yaml.Unmarshal([]byte(yamlStr), &task)
-
-	if err != nil {
-		t.Error("the yaml is invalid", err)
-	}
+	assert.Nil(t, err, "the yaml is invalid")
 
 	anchor := time.Date(2019, time.July, 18, 5, 30, 0, 0, time.Local) // 18th jul 2019 3:0
-
-	if !task.IsTime(&anchor) {
-		t.Error("false negative")
-	}
+	assert.True(t, task.IsTime(&anchor))
 
 	anchor = time.Date(2019, time.July, 18, 5, 15, 0, 0, time.Local) // 18th jul 2019 3:0
-
-	if task.IsTime(&anchor) {
-		t.Error("false positive")
-	}
+	assert.False(t, task.IsTime(&anchor))
 
 	anchor = time.Date(2019, time.July, 18, 6, 25, 0, 0, time.Local) // 18th jul 2019 3:0
+	assert.False(t, task.IsTime(&anchor))
 
-	if task.IsTime(&anchor) {
-		t.Error("false positive")
-	}
 }
 
 func TestRepeatingTask(t *testing.T) {
@@ -172,23 +143,15 @@ schedule:
   every: 0:30`
 	err := yaml.Unmarshal([]byte(yamlStr), &task)
 
-	if err != nil {
-		t.Error("the yaml is invalid", err)
-	}
+	assert.Nil(t, err)
 
 	now := time.Now()
 
 	task.Execute()
 
 	now = now.Add(5 * time.Minute)
-
-	if task.IsTime(&now) {
-		t.Error("it's still not time!")
-	}
+	assert.False(t, task.IsTime(&now))
 
 	now = now.Add(30 * time.Minute)
-
-	if !task.IsTime(&now) {
-		t.Error("it's time!")
-	}
+	assert.True(t, task.IsTime(&now))
 }

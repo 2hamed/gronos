@@ -3,38 +3,28 @@ package scheduler
 import (
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestIntSliceContains(t *testing.T) {
 	haystack := []int{1, 3, 4, 6, 712, 45, -78}
 
-	if !IntSliceContains(haystack, 4) {
-		t.Error("slice contains 4, but it says it can't find it")
-	}
+	assert.True(t, IntSliceContains(haystack, 4))
 
-	if IntSliceContains(haystack, 5) {
-		t.Error("slice doesn't contain 5, but it says it does")
-	}
+	assert.False(t, IntSliceContains(haystack, 5))
 
-	if IntSliceContains(nil, 5) {
-		t.Error("nil slice should always return false")
-	}
+	assert.False(t, IntSliceContains(nil, 5))
 }
 
 func TestWeekdaySliceContains(t *testing.T) {
 	haystack := []time.Weekday{time.Thursday, time.Wednesday}
 
-	if WeekDaySliceContains(haystack, time.Saturday) {
-		t.Error("haystack does not contain time.Saturday")
-	}
+	assert.False(t, WeekDaySliceContains(haystack, time.Saturday))
 
-	if !WeekDaySliceContains(haystack, time.Thursday) {
-		t.Error("haystack does contain time.Thursday")
-	}
+	assert.True(t, WeekDaySliceContains(haystack, time.Thursday))
 
-	if WeekDaySliceContains(nil, time.Saturday) {
-		t.Error("nil slice should always return false")
-	}
+	assert.False(t, WeekDaySliceContains(nil, time.Saturday))
 }
 func TestMonthSliceContains(t *testing.T) {
 	haystack := []time.Month{time.January, time.March, time.October}
@@ -60,17 +50,11 @@ func TestTimeSliceContainsHoursMintues(t *testing.T) {
 		time.Date(0, 0, 0, 5, 59, 0, 0, time.Local),
 	}
 
-	if !TimeSliceContainsHoursMintues(haystack, time.Date(4, 4, 4, 13, 13, 10, 0, time.Local)) {
-		t.Error("this should be true")
-	}
+	assert.True(t, TimeSliceContainsHoursMintues(haystack, time.Date(4, 4, 4, 13, 13, 10, 0, time.Local)))
 
-	if TimeSliceContainsHoursMintues(haystack, time.Date(2010, 1, 1, 19, 0, 0, 0, time.Local)) {
-		t.Error("this should be false")
-	}
+	assert.False(t, TimeSliceContainsHoursMintues(haystack, time.Date(2010, 1, 1, 19, 0, 0, 0, time.Local)))
 
-	if TimeSliceContainsHoursMintues(nil, time.Date(4, 5, 6, 73, 4, 6, 4, time.Local)) {
-		t.Error("nil slice should always return false")
-	}
+	assert.False(t, TimeSliceContainsHoursMintues(nil, time.Date(4, 5, 6, 73, 4, 6, 4, time.Local)))
 }
 
 func TestParseMonth(t *testing.T) {
@@ -78,31 +62,16 @@ func TestParseMonth(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-
-	if m != time.January {
-		t.Error("wrong month parsed")
-	}
+	assert.Equal(t, time.January, m)
 
 	m, err = ParseMonth("jun")
-	if err != nil {
-		t.Error(err)
-	}
-
-	if m != time.June {
-		t.Error("wrong month parsed")
-	}
+	assert.Nil(t, err)
+	assert.Equal(t, time.June, m)
 
 	m, err = ParseMonth("january")
-	if err != nil {
-		t.Error(err)
-	}
+	assert.Nil(t, err)
+	assert.Equal(t, time.January, m)
 
-	if m != time.January {
-		t.Error("wrong month parsed")
-	}
-
-	m, err = ParseMonth("")
-	if err == nil {
-		t.Error("should return error")
-	}
+	_, err = ParseMonth("")
+	assert.NotNil(t, err)
 }
