@@ -1,7 +1,6 @@
 package scheduler
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -11,26 +10,17 @@ import (
 
 // Between represents a period in a day
 type Between struct {
-	from Hour
-	to   Hour
+	From Hour `json:"from"`
+	To   Hour `json:"to"`
 }
 
 func (b Between) String() string {
-	return fmt.Sprintf("%s-%s", b.from.String(), b.to.String())
-}
-
-func (b Between) MarshalJSON() ([]byte, error) {
-	data := make(map[string]Hour)
-
-	data["from"] = b.from
-	data["to"] = b.to
-
-	return json.Marshal(data)
+	return fmt.Sprintf("%s-%s", b.From.String(), b.To.String())
 }
 
 // IsInside checks whether a given time.Time is inside the period or not
 func (b Between) IsInside(t *time.Time) bool {
-	return b.from.IsBefore(t) && b.to.IsAfter(t)
+	return b.From.IsBefore(t) && b.To.IsAfter(t)
 }
 
 func parseBetween(str string) (Between, error) {
@@ -52,7 +42,7 @@ func parseBetween(str string) (Between, error) {
 	}
 
 	return Between{
-		from: from,
-		to:   to,
+		From: from,
+		To:   to,
 	}, nil
 }
