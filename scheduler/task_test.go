@@ -75,15 +75,10 @@ schedule:
     at:
       - 5:15`
 	err := yaml.Unmarshal([]byte(yamlStr), &task)
+	assert.Nil(t, err)
 
-	if err != nil {
-		t.Error("the yaml is invalid", err)
-	}
 	anchor := time.Date(2019, time.July, 18, 5, 15, 0, 0, time.Local) // 18th jul 2019 3:0
-
-	if task.IsTime(&anchor) {
-		t.Error("false positive, this should be skipped")
-	}
+	assert.False(t, task.IsTime(&anchor))
 }
 
 func TestExceptMonths(t *testing.T) {

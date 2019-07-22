@@ -4,51 +4,34 @@ import (
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestParseBetween(t *testing.T) {
 	b, err := parseBetween("3-5")
-	if err != nil {
-		t.Error("failed parsing valid between")
-	}
-
-	if !reflect.DeepEqual(b, Between{from: newHourNoErr(3, 0), to: newHourNoErr(5, 0)}) {
-		t.Error("wrong parsed value for between")
-	}
+	assert.Nil(t, err)
+	assert.True(t, reflect.DeepEqual(b, Between{from: newHourNoErr(3, 0), to: newHourNoErr(5, 0)}))
 
 	b, err = parseBetween("17-18:40")
-	if err != nil {
-		t.Error("failed parsing valid between")
-	}
-
-	if !reflect.DeepEqual(b, Between{from: newHourNoErr(17, 0), to: newHourNoErr(18, 40)}) {
-		t.Error("wrong parsed value for between")
-	}
+	assert.Nil(t, err)
+	assert.True(t, reflect.DeepEqual(b, Between{from: newHourNoErr(17, 0), to: newHourNoErr(18, 40)}))
 
 	b, err = parseBetween("35")
-	if err == nil {
-		t.Error("should not be able to parse this!")
-	}
+	assert.NotNil(t, err)
 
 	b, err = parseBetween("3:70-6")
-	if err == nil {
-		t.Error("should not be able to parse this!")
-	}
+	assert.NotNil(t, err)
 
 }
 
 func TestIsInside(t *testing.T) {
 	b, _ := parseBetween("3:30-5")
 	tim := time.Date(2019, 1, 1, 4, 0, 0, 0, time.Local)
-
-	if !b.IsInside(&tim) {
-		t.Error("wrong inside detection")
-	}
+	assert.True(t, b.IsInside(&tim))
 
 	b, _ = parseBetween("3:30-5")
 	tim = time.Date(2019, 1, 1, 5, 1, 0, 0, time.Local)
+	assert.False(t, b.IsInside(&tim))
 
-	if b.IsInside(&tim) {
-		t.Error("wrong inside detection")
-	}
 }

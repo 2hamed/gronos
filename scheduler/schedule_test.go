@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v2"
 )
 
@@ -40,28 +40,19 @@ func TestScheduleUnmarshal(t *testing.T) {
 	var schedule Schedule
 	err := yaml.Unmarshal([]byte(yamlStr), &schedule)
 
-	if err != nil {
-		t.Error(errors.Wrap(err, "failed to unmarshal yaml"))
+	if !assert.Nil(t, err) {
 		return
 	}
 
 	every := schedule.Every
-
-	if every != 2*3600+30*60 {
-		t.Error(errors.Wrap(err, "wrong value for `every`"))
-	}
+	assert.Equal(t, 2*3600+30*60, every)
 
 	weekdays := schedule.Weekdays
 
-	if !reflect.DeepEqual(weekdays, []time.Weekday{time.Saturday, time.Monday, time.Tuesday}) {
-		t.Error("wrong value for `weekdays`")
-	}
+	assert.True(t, reflect.DeepEqual(weekdays, []time.Weekday{time.Saturday, time.Monday, time.Tuesday}))
 
 	monthdays := schedule.Monthdays
-
-	if !reflect.DeepEqual(monthdays, []int{13}) {
-		t.Error("wrong value for `monthdays`")
-	}
+	assert.True(t, reflect.DeepEqual(monthdays, []int{13}))
 }
 
 func TestScheduleAt(t *testing.T) {
@@ -71,15 +62,13 @@ func TestScheduleAt(t *testing.T) {
 
 	anchor := time.Date(1, 1, 1, 5, 13, 0, 0, time.Local)
 
-	if a, _ := schedule.checkAt(&anchor); !a {
-		t.Error("checkAt failed to recognize")
-	}
+	a, _ := schedule.checkAt(&anchor)
+	assert.True(t, a)
 
 	anchor = time.Date(1, 1, 1, 5, 14, 0, 0, time.Local)
 
-	if a, _ := schedule.checkAt(&anchor); a {
-		t.Error("checkAt failed to recognize")
-	}
+	a, _ = schedule.checkAt(&anchor)
+	assert.False(t, a)
 }
 
 func TestScheduleMonths(t *testing.T) {
@@ -88,21 +77,18 @@ func TestScheduleMonths(t *testing.T) {
 
 	june := time.Date(2019, 6, 15, 5, 13, 0, 0, time.Local)
 
-	if m, _ := schedule.checkMonths(&june); !m {
-		t.Error("failed to recognize June")
-	}
+	m, _ := schedule.checkMonths(&june)
+	assert.True(t, m)
 
 	october := time.Date(2019, 10, 15, 5, 13, 0, 0, time.Local)
 
-	if m, _ := schedule.checkMonths(&october); !m {
-		t.Error("failed to recognize October")
-	}
+	m, _ = schedule.checkMonths(&october)
+	assert.True(t, m)
 
 	january := time.Date(2019, 1, 15, 5, 13, 0, 0, time.Local)
 
-	if m, _ := schedule.checkMonths(&january); m {
-		t.Error("false positive in months")
-	}
+	m, _ = schedule.checkMonths(&january)
+	assert.False(t, m)
 }
 
 func TestScheduleMothdays(t *testing.T) {
@@ -113,13 +99,12 @@ func TestScheduleMothdays(t *testing.T) {
 
 	twelfth := time.Date(2019, 6, 12, 5, 13, 0, 0, time.Local)
 
-	if md, _ := schedule.checkMonthdays(&thirteenth); !md {
-		t.Error("failed recognizing 13th")
-	}
+	md, _ := schedule.checkMonthdays(&thirteenth)
+	assert.True(t, md)
 
-	if md, _ := schedule.checkMonthdays(&twelfth); md {
-		t.Error("false positive in recognizing 12th")
-	}
+	md, _ = schedule.checkMonthdays(&twelfth)
+	assert.False(t, md)
+
 }
 
 func TestScheduleWeekdays(t *testing.T) {
@@ -128,14 +113,12 @@ func TestScheduleWeekdays(t *testing.T) {
 
 	saturday := time.Date(2019, 7, 13, 5, 13, 0, 0, time.Local) // 13th july
 
-	if wd, _ := schedule.checkWeekday(&saturday); !wd {
-		t.Error("failed to recognize saturday")
-	}
+	wd, _ := schedule.checkWeekday(&saturday)
+	assert.True(t, wd)
 
 	friday := time.Date(2019, 7, 19, 5, 13, 0, 0, time.Local) // 19th july
 
-	if wd, _ := schedule.checkWeekday(&friday); wd {
-		t.Error("false positive in recognizing weekday")
-	}
+	wd, _ = schedule.checkWeekday(&friday)
+	assert.False(t, wd)
 
 }
