@@ -11,11 +11,11 @@ import (
 func TestParseBetween(t *testing.T) {
 	b, err := parseBetween("3-5")
 	assert.Nil(t, err)
-	assert.True(t, reflect.DeepEqual(b, Between{from: newHourNoErr(3, 0), to: newHourNoErr(5, 0)}))
+	assert.True(t, reflect.DeepEqual(b, Between{From: newHourNoErr(3, 0), To: newHourNoErr(5, 0)}))
 
 	b, err = parseBetween("17-18:40")
 	assert.Nil(t, err)
-	assert.True(t, reflect.DeepEqual(b, Between{from: newHourNoErr(17, 0), to: newHourNoErr(18, 40)}))
+	assert.True(t, reflect.DeepEqual(b, Between{From: newHourNoErr(17, 0), To: newHourNoErr(18, 40)}))
 
 	b, err = parseBetween("35")
 	assert.NotNil(t, err)
