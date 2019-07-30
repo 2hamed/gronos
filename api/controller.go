@@ -6,9 +6,9 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Controller controls the handles the response to an HTTP request
+// Controller handles the response to an HTTP request
 type Controller struct {
-	handler func(params map[string]string) []byte
+	handler func(params map[string]string) (r []byte, e *APIError)
 }
 
 func (c Controller) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -23,12 +23,18 @@ func (c Controller) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		vars[k] = v[0]
 	}
 
-	data := c.handler(vars)
+	data, err := c.handler(vars)
+
+	if err != nil {
+		w.Write(err.JSON())
+		return
+	}
+
 	w.Write(data)
 }
 
 // NewController creates a Controller with passed in param func as its callback
-func NewController(h func(params map[string]string) []byte) *Controller {
+func NewController(h func(params map[string]string) (r []byte, e *APIError)) *Controller {
 	return &Controller{
 		handler: h,
 	}
