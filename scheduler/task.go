@@ -5,6 +5,8 @@ import (
 	"log"
 	"os/exec"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 // Tasks is a type alias of []Task
@@ -27,6 +29,13 @@ var taskMap = make(TaskMap)
 // GetTasks returns the currently loaded Tasks
 func GetTasks() Tasks {
 	return tasks
+}
+
+func GetTask(name string) (*Task, error) {
+	if t, ok := taskMap[name]; ok {
+		return t, nil
+	}
+	return nil, errors.New("task not found")
 }
 
 // Execute executes the Task Command inside a separate goroutine

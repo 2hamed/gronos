@@ -1,23 +1,19 @@
 package api
 
 import (
-	"encoding/json"
-
 	"github.com/2hamed/goronos/scheduler"
 )
 
-func listTasks(params map[string]string) ([]byte, *APIError) {
+func listTasks(params map[string]string) (*Response, *APIError) {
 
-	output, err := json.Marshal(scheduler.GetTasks())
-
-	if err != nil {
-		return nil, NewAPIError(HTTP_SERVER_ERROR, err.Error(), err)
-	}
-
-	return output, nil
+	return &Response{Data: scheduler.GetTasks()}, nil
 }
 
-func getTask(params map[string]string) ([]byte, *APIError) {
+func getTask(params map[string]string) (*Response, *APIError) {
+	task, err := scheduler.GetTask(params["name"])
+	if err != nil {
+		return nil, NewAPIError(HTTP_NOT_FOUND, "Task with that name not found!")
+	}
 
-	return nil, NewAPIError(HTTP_NOT_FOUND, "Task with that name not found!")
+	return &Response{Data: task}, nil
 }
