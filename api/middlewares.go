@@ -12,6 +12,5 @@ func jsonMiddleWare(next http.Handler) http.Handler {
 		w.Header().Set("X-Author", "Hamed Momeni")
 
 		next.ServeHTTP(w, r)
-
 	})
 }

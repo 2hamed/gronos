@@ -26,10 +26,11 @@ func (c Controller) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	data, err := c.handler(vars)
 
 	if err != nil {
+		w.WriteHeader(err.Status)
 		w.Write(err.JSON())
 		return
 	}
-
+	w.WriteHeader(200)
 	w.Write(data)
 }
 
