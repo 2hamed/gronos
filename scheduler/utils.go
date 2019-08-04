@@ -126,13 +126,13 @@ func ParseMonth(v interface{}) (time.Month, error) {
 }
 
 // LoadTasksFromFile reads an etire YAML file and outputs the corresponding Tasks struct
-func LoadTasksFromFile(filePath string) (Tasks, error) {
+func LoadTasksFromFile(filePath string) ([]*Task, error) {
 	content, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		return nil, err
 	}
 
-	var tasks Tasks
+	var tasks []*Task
 	err = yaml.Unmarshal(content, &tasks)
 	if err != nil {
 		return nil, err
@@ -143,7 +143,7 @@ func LoadTasksFromFile(filePath string) (Tasks, error) {
 }
 
 // LoadTasksFromDir scans a directory and loads every YAML file into corresponding Tasks struct
-func LoadTasksFromDir(dirPath string) (Tasks, error) {
+func LoadTasksFromDir(tm *taskManager, dirPath string) ([]*Task, error) {
 
 	dirPath, _ = filepath.Abs(dirPath)
 
@@ -152,7 +152,7 @@ func LoadTasksFromDir(dirPath string) (Tasks, error) {
 		panic(err)
 	}
 
-	var tasks = make(Tasks, 0)
+	var tasks = make([]*Task, 0)
 
 	for _, f := range files {
 		if !f.IsDir() && strings.HasSuffix(f.Name(), ".yaml") {
@@ -162,11 +162,11 @@ func LoadTasksFromDir(dirPath string) (Tasks, error) {
 			}
 
 			for _, task := range ts {
-				if _, ok := taskMap[task.Name]; ok {
+				if _, ok := tm.tasks[task.Name]; ok {
 					return nil, errors.New("duplicate task name: " + task.Name)
 				}
 				tasks = append(tasks, task)
-				taskMap[task.Name] = task
+				tm.tasks[task.Name] = task
 			}
 		}
 	}

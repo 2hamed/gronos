@@ -8,10 +8,7 @@ import (
 )
 
 // Tasks is a type alias of []Task
-type Tasks []*Task
-
-// TaskMap is map to store references to Tasks
-type TaskMap map[string]*Task
+type Tasks map[string]*Task
 
 // Task is command which run by Schdule
 type Task struct {
@@ -22,8 +19,8 @@ type Task struct {
 
 // Execute executes the Task Command inside a separate goroutine
 func (task Task) Execute() {
-	taskLastRunTime[task.Name] = time.Now().Unix()
-	
+	tm.taskLastRunTime[task.Name] = time.Now().Unix()
+
 	log.Println("Running:", task.Command)
 
 	cmd := exec.Command(task.Command[0], task.Command[1:]...)
@@ -67,7 +64,7 @@ func (task Task) checkEvery(anchor *time.Time) bool {
 
 	every := task.Schedule.Every
 
-	if lastTime, ok := taskLastRunTime[task.Name]; ok {
+	if lastTime, ok := tm.taskLastRunTime[task.Name]; ok {
 		if diff := anchor.Unix() - lastTime; int(diff) > every {
 			result = true
 		}

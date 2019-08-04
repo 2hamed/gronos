@@ -1,20 +1,38 @@
 package scheduler
 
-import "github.com/pkg/errors"
+import (
+	"github.com/pkg/errors"
+)
 
-var tasks Tasks
-var taskLastRunTime = make(map[string]int64)
-var taskMap = make(TaskMap)
-var disabledTasks = make(map[string]*Task)
+type taskManager struct {
+	tasks           map[string]*Task
+	disabledTasks   map[string]bool
+	taskLastRunTime map[string]int64
+}
+
+func (tm *taskManager) initialize(tasks []*Task) {
+	for _, v := range tasks {
+		tm.tasks[v.Name] = v
+	}
+}
 
 // GetTasks returns the currently loaded Tasks
-func GetTasks() Tasks {
+func GetTasks() []*Task {
+	tasks := make([]*Task, 0)
+
+	for _, v := range tm.tasks {
+		if b, ok := tm.disabledTasks[v.Name]; b || ok {
+			continue
+		}
+		tasks = append(tasks, v)
+	}
+
 	return tasks
 }
 
 // GetTask returns a task by its name
 func GetTask(name string) (*Task, error) {
-	if t, ok := taskMap[name]; ok {
+	if t, ok := tm.tasks[name]; ok {
 		return t, nil
 	}
 	return nil, errors.New("task not found")
@@ -25,47 +43,22 @@ func DisableTask(name string) error {
 	var t *Task
 	var ok bool
 
-	if t, ok = taskMap[name]; !ok {
+	if t, ok = tm.tasks[name]; !ok {
 		return errors.New("No task by that name found")
 	}
 
-	disabledTasks[name] = t
+	tm.disabledTasks[t.Name] = true
 
-	delete(taskMap, name)
-	index := findTaskIndex(name)
-	deleteTaskFromList(index)
 	return nil
 }
 
 // GetDisabledTasks returns disabled tasks as a slice
-func GetDisabledTasks() Tasks {
-	tasks := make(Tasks, 0)
-	for _, v := range disabledTasks {
-		tasks = append(tasks, v)
-	}
-	return tasks
-}
-
-func findTaskIndex(name string) int {
-	var i = -1
-	for i = 0; i < len(tasks); i++ {
-		if tasks[i].Name == name {
-			break
+func GetDisabledTasks() []*Task {
+	tasks := make([]*Task, 0)
+	for k, v := range tm.disabledTasks {
+		if v {
+			tasks = append(tasks, tm.tasks[k])
 		}
 	}
-	return i
-}
-
-func deleteTaskFromList(index int) {
-	switch len(tasks) {
-	case 0:
-		break
-	case 1:
-		tasks = make(Tasks, 0)
-		break
-	default:
-		tasks[index] = tasks[len(tasks)-1]
-		tasks = tasks[:len(tasks)-1]
-		break
-	}
+	return tasks
 }
