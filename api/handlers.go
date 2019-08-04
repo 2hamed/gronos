@@ -4,16 +4,32 @@ import (
 	"github.com/2hamed/goronos/scheduler"
 )
 
-func listTasks(params map[string]string) (*Response, *APIError) {
+func listTasks(params map[string]string) (interface{}, error) {
 
-	return &Response{Data: scheduler.GetTasks()}, nil
+	return scheduler.GetTasks(), nil
 }
 
-func getTask(params map[string]string) (*Response, *APIError) {
+func getTask(params map[string]string) (interface{}, error) {
 	task, err := scheduler.GetTask(params["name"])
 	if err != nil {
 		return nil, NewAPIError(HTTP_NOT_FOUND, "Task with that name not found!")
 	}
 
-	return &Response{Data: task}, nil
+	return task, nil
+}
+
+func getDisabledTasks(params map[string]string) (interface{}, error) {
+	return scheduler.GetDisabledTasks(), nil
+}
+
+func disableTask(params map[string]string) (interface{}, error) {
+	name := params["name"]
+
+	err := scheduler.DisableTask(name)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return getDisabledTasks(params)
 }

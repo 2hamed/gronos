@@ -34,8 +34,8 @@ func (a APIError) JSON() []byte {
 }
 
 // NewAPIError instantiates and APIError
-func NewAPIError(status int, message string, errs ...error) *APIError {
-	e := &APIError{
+func NewAPIError(status int, message string, errs ...error) APIError {
+	e := APIError{
 		Status:  status,
 		Message: message,
 	}

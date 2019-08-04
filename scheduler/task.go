@@ -5,8 +5,6 @@ import (
 	"log"
 	"os/exec"
 	"time"
-
-	"github.com/pkg/errors"
 )
 
 // Tasks is a type alias of []Task
@@ -17,31 +15,17 @@ type TaskMap map[string]*Task
 
 // Task is command which run by Schdule
 type Task struct {
-	Name     string   `yaml:"name"`
-	Command  []string `yaml:"command"`
-	Schedule Schedule `yaml:"schedule"`
-}
-
-var tasks Tasks
-var taskLastRunTime = make(map[string]int64)
-var taskMap = make(TaskMap)
-
-// GetTasks returns the currently loaded Tasks
-func GetTasks() Tasks {
-	return tasks
-}
-
-func GetTask(name string) (*Task, error) {
-	if t, ok := taskMap[name]; ok {
-		return t, nil
-	}
-	return nil, errors.New("task not found")
+	Name     string   `json:"name"`
+	Command  []string `json:"command"`
+	Schedule Schedule `json:"schedule"`
 }
 
 // Execute executes the Task Command inside a separate goroutine
 func (task Task) Execute() {
 	taskLastRunTime[task.Name] = time.Now().Unix()
+	
 	log.Println("Running:", task.Command)
+
 	cmd := exec.Command(task.Command[0], task.Command[1:]...)
 	go func(cmd *exec.Cmd) {
 		err := cmd.Run()
