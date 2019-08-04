@@ -21,7 +21,7 @@ func GetTasks() []*Task {
 	tasks := make([]*Task, 0)
 
 	for _, v := range tm.tasks {
-		if b, ok := tm.disabledTasks[v.Name]; b || ok {
+		if b, ok := tm.disabledTasks[v.Name]; b && ok {
 			continue
 		}
 		tasks = append(tasks, v)
