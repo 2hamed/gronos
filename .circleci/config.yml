@@ -23,5 +23,5 @@ jobs:
 
       # specify any bash command here prefixed with `run: `
       - run: go mod tidy
-      - run: go test -race -coverprofile=coverage.txt -covermode=atomic ./scheduler
+      - run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
       - run: bash <(curl -s https://codecov.io/bash)
