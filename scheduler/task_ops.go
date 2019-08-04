@@ -53,6 +53,7 @@ func DisableTask(name string) error {
 }
 
 // GetDisabledTasks returns disabled tasks as a slice
+// returns error if task is not found
 func GetDisabledTasks() []*Task {
 	tasks := make([]*Task, 0)
 	for k, v := range tm.disabledTasks {
@@ -61,4 +62,16 @@ func GetDisabledTasks() []*Task {
 		}
 	}
 	return tasks
+}
+
+// EnableTask reenables a disabled
+func EnableTask(name string) error {
+
+	if _, ok := tm.tasks[name]; !ok {
+		return errors.New("No task by that name found")
+	}
+
+	tm.disabledTasks[name] = false
+
+	return nil
 }

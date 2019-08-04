@@ -28,7 +28,18 @@ func disableTask(params map[string]string) (interface{}, error) {
 	err := scheduler.DisableTask(name)
 
 	if err != nil {
-		return nil, err
+		return nil, NewAPIError(HTTP_NOT_FOUND, err.Error())
+	}
+
+	return getDisabledTasks(params)
+}
+func enableTask(params map[string]string) (interface{}, error) {
+	name := params["name"]
+
+	err := scheduler.EnableTask(name)
+
+	if err != nil {
+		return nil, NewAPIError(HTTP_NOT_FOUND, err.Error())
 	}
 
 	return getDisabledTasks(params)
