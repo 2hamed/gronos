@@ -2,10 +2,10 @@ package api
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 )
 
 // Controller handles the response to an HTTP request
@@ -31,8 +31,7 @@ func (c Controller) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(e.Status)
 			w.Write(e.JSON())
 		} else {
-			// TODO: log errors not of type APIError
-			log.Println(err)
+			log.WithField("err", err).Warn("Unexpected error occured")
 			w.WriteHeader(500)
 		}
 		return
