@@ -31,8 +31,10 @@ func (c Controller) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(e.Status)
 			w.Write(e.JSON())
 		} else {
-			log.WithField("err", err).Warn("Unexpected error occured")
-			w.WriteHeader(500)
+			log.WithField("err", err).Error("Unexpected error occured")
+			apierr := NewAPIError(500, "Something failed in the system!")
+			w.WriteHeader(apierr.Status)
+			w.Write(apierr.JSON())
 		}
 		return
 	}
@@ -44,6 +46,7 @@ func (c Controller) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
+		log.WithField("err", err).Error("Failed marshalling response data")
 		apierr := NewAPIError(500, "Something failed in the system!")
 		w.WriteHeader(apierr.Status)
 		w.Write(apierr.JSON())
