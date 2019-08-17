@@ -17,16 +17,16 @@ func TestParseHour(t *testing.T) {
 	assert.Nil(t, err)
 	assert.True(t, reflect.DeepEqual(h, hour{hour: 3, minute: 15}))
 
-	h, err = parseHour(":15")
+	_, err = parseHour(":15")
 	assert.NotNil(t, err)
 
-	h, err = parseHour("5:a")
+	_, err = parseHour("5:a")
 	assert.NotNil(t, err)
 
-	h, err = parseHour("30:25")
+	_, err = parseHour("30:25")
 	assert.NotNil(t, err)
 
-	h, err = parseHour("3:60")
+	_, err = parseHour("3:60")
 	assert.NotNil(t, err)
 
 }

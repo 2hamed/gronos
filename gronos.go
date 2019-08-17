@@ -35,7 +35,7 @@ func main() {
 
 	http.Handle("/", r)
 
-	fmt.Println("Goronos engine is running and the API server is listening on port 8080...")
+	fmt.Println("Gronos engine is running and the API server is listening on port 8080...")
 
 	err := http.ListenAndServe(":8080", nil)
 

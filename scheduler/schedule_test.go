@@ -58,7 +58,7 @@ func TestScheduleUnmarshal(t *testing.T) {
 func TestScheduleAt(t *testing.T) {
 
 	var schedule Schedule
-	yaml.Unmarshal([]byte(yamlStr), &schedule)
+	_ = yaml.Unmarshal([]byte(yamlStr), &schedule)
 
 	anchor := time.Date(1, 1, 1, 5, 13, 0, 0, time.Local)
 
@@ -73,7 +73,7 @@ func TestScheduleAt(t *testing.T) {
 
 func TestScheduleMonths(t *testing.T) {
 	var schedule Schedule
-	yaml.Unmarshal([]byte(yamlStr), &schedule)
+	_ = yaml.Unmarshal([]byte(yamlStr), &schedule)
 
 	june := time.Date(2019, 6, 15, 5, 13, 0, 0, time.Local)
 
@@ -93,7 +93,7 @@ func TestScheduleMonths(t *testing.T) {
 
 func TestScheduleMothdays(t *testing.T) {
 	var schedule Schedule
-	yaml.Unmarshal([]byte(yamlStr), &schedule)
+	_ = yaml.Unmarshal([]byte(yamlStr), &schedule)
 
 	thirteenth := time.Date(2019, 6, 13, 5, 13, 0, 0, time.Local)
 
@@ -109,7 +109,7 @@ func TestScheduleMothdays(t *testing.T) {
 
 func TestScheduleWeekdays(t *testing.T) {
 	var schedule Schedule
-	yaml.Unmarshal([]byte(yamlStr), &schedule)
+	_ = yaml.Unmarshal([]byte(yamlStr), &schedule)
 
 	saturday := time.Date(2019, 7, 13, 5, 13, 0, 0, time.Local) // 13th july
 

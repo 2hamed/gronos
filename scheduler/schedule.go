@@ -79,7 +79,7 @@ func (s *Schedule) populate(m map[interface{}]interface{}) error {
 	exc := m["except"]
 	if exc != nil {
 		var except = Schedule{}
-		except.populate(exc.(map[interface{}]interface{}))
+		_ = except.populate(exc.(map[interface{}]interface{}))
 		s.Except = &except
 	}
 

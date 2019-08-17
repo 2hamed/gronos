@@ -17,10 +17,10 @@ func TestParseBetween(t *testing.T) {
 	assert.Nil(t, err)
 	assert.True(t, reflect.DeepEqual(b, Between{From: newHourNoErr(17, 0), To: newHourNoErr(18, 40)}))
 
-	b, err = parseBetween("35")
+	_, err = parseBetween("35")
 	assert.NotNil(t, err)
 
-	b, err = parseBetween("3:70-6")
+	_, err = parseBetween("3:70-6")
 	assert.NotNil(t, err)
 
 }
