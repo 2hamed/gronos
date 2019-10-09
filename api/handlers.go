@@ -1,16 +1,16 @@
 package api
 
 import (
-	"github.com/2hamed/goronos/scheduler"
+	sch "github.com/2hamed/goronos/scheduler"
 )
 
 func listTasks(params map[string]string) (interface{}, error) {
 
-	return scheduler.GetTasks(), nil
+	return sch.GetTasks(), nil
 }
 
 func getTask(params map[string]string) (interface{}, error) {
-	task, err := scheduler.GetTask(params["name"])
+	task, err := sch.GetTask(params["name"])
 	if err != nil {
 		return nil, NewAPIError(HTTP_NOT_FOUND, "Task with that name not found!")
 	}
@@ -19,13 +19,13 @@ func getTask(params map[string]string) (interface{}, error) {
 }
 
 func getDisabledTasks(params map[string]string) (interface{}, error) {
-	return scheduler.GetDisabledTasks(), nil
+	return sch.GetDisabledTasks(), nil
 }
 
 func disableTask(params map[string]string) (interface{}, error) {
 	name := params["name"]
 
-	err := scheduler.DisableTask(name)
+	err := sch.DisableTask(name)
 
 	if err != nil {
 		return nil, NewAPIError(HTTP_NOT_FOUND, err.Error())
@@ -36,7 +36,7 @@ func disableTask(params map[string]string) (interface{}, error) {
 func enableTask(params map[string]string) (interface{}, error) {
 	name := params["name"]
 
-	err := scheduler.EnableTask(name)
+	err := sch.EnableTask(name)
 
 	if err != nil {
 		return nil, NewAPIError(HTTP_NOT_FOUND, err.Error())
