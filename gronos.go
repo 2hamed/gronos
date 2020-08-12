@@ -27,7 +27,9 @@ func init() {
 }
 func main() {
 
-	scheduler.StartLooper()
+	configPath := os.Args[1]
+
+	scheduler.StartLooper(configPath)
 
 	r := mux.NewRouter()
 

@@ -1,7 +1,6 @@
 package scheduler
 
 import (
-	"os"
 	"time"
 )
 
@@ -12,11 +11,9 @@ var tm = &taskManager{
 }
 
 // StartLooper starts the main looper for tasks
-func StartLooper() {
+func StartLooper(configPath string) {
 
-	path := os.Args[1]
-
-	tasks, err := LoadTasksFromDir(tm, path)
+	tasks, err := LoadTasksFromDir(tm, configPath)
 	if err != nil {
 		panic(err)
 	}
