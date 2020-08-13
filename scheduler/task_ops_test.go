@@ -7,13 +7,13 @@ import (
 )
 
 var tasks = []*Task{
-	&Task{
+	{
 		Name: "task1",
 	},
-	&Task{
+	{
 		Name: "task2",
 	},
-	&Task{
+	{
 		Name: "task3",
 	},
 }
@@ -50,10 +50,10 @@ func TestDisableTask(t *testing.T) {
 	ts := GetTasks()
 
 	assert.ElementsMatch(t, ts, []*Task{
-		&Task{
+		{
 			Name: "task2",
 		},
-		&Task{
+		{
 			Name: "task3",
 		},
 	})
@@ -87,10 +87,10 @@ func TestGetDisabledTask(t *testing.T) {
 	assert.Nil(t, err)
 
 	assert.ElementsMatch(t, GetDisabledTasks(), []*Task{
-		&Task{
+		{
 			Name: "task1",
 		},
-		&Task{
+		{
 			Name: "task2",
 		},
 	})
@@ -99,7 +99,7 @@ func TestGetDisabledTask(t *testing.T) {
 	assert.Nil(t, err)
 
 	assert.ElementsMatch(t, GetDisabledTasks(), []*Task{
-		&Task{
+		{
 			Name: "task1",
 		},
 	})

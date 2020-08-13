@@ -50,4 +50,8 @@
         - 13
       at:
         - 5
+- name: echo task
+  command: ["/home/hamed/echo.sh"]
+  schedule:
+    every: 10s
 

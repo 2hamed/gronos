@@ -1,8 +1,6 @@
 package scheduler
 
 import (
-	// "encoding/json"
-
 	"strconv"
 	"strings"
 	"time"
@@ -32,27 +30,14 @@ func (s *Schedule) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	return s.populate(m)
 }
 
-// // MarshalJSON is the custom json marshalling of the Schedule struct
-// func (s *Schedule) MarshalJSON() ([]byte, error) {
-// 	mapping := make(map[string]interface{})
-
-// 	if v := s.Months; v != nil {
-// 		mapping["months"] = v
-// 	}
-
-// 	mapping["every"] = s.Every
-
-// 	if v := s.Weekdays; len(v) > 0 {
-// 		mapping["weekdays"] = v
-// 	}
-
-// 	return json.Marshal(mapping)
-// }
-
 func (s *Schedule) populate(m map[interface{}]interface{}) error {
 
 	if v, ok := m["every"]; ok {
-		s.Every, _ = parseEvery(v.(string))
+		var err error
+		s.Every, err = parseEvery(v.(string))
+		if err != nil {
+			return err
+		}
 	}
 
 	if v, ok := m["weekdays"]; ok {

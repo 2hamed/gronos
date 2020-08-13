@@ -12,7 +12,7 @@ var taskYaml = `
 name: command1
 command: ["/path/to/command1"]
 schedule:
-  every: "2:30"
+  every: 2h30s
   months:
     - jun
     - 3
@@ -70,7 +70,7 @@ func TestExceptAt(t *testing.T) {
 name: command1
 command: ["/path/to/command1"]
 schedule:
-  every: "1"
+  every: 1s
   except:
     at:
       - 5:15`
@@ -135,7 +135,7 @@ func TestRepeatingTask(t *testing.T) {
 name: command1
 command: ["echo", "hello", ">", "/dev/null"]
 schedule:
-  every: 0:30`
+  every: 30m`
 	err := yaml.Unmarshal([]byte(yamlStr), &task)
 
 	assert.Nil(t, err)

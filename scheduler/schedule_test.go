@@ -10,7 +10,7 @@ import (
 )
 
 var yamlStr = `
-every: 2:30
+every: 2h30s
 weekdays:
  - sat
  - mon
@@ -45,7 +45,8 @@ func TestScheduleUnmarshal(t *testing.T) {
 	}
 
 	every := schedule.Every
-	assert.Equal(t, 2*3600+30*60, every)
+	d, _ := time.ParseDuration("2h30s")
+	assert.Equal(t, d.Seconds(), every)
 
 	weekdays := schedule.Weekdays
 

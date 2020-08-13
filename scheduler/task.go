@@ -1,10 +1,10 @@
 package scheduler
 
 import (
-	"fmt"
-	"log"
 	"os/exec"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // Tasks is a type alias of []Task
@@ -25,10 +25,12 @@ func (task Task) Execute() {
 
 	cmd := exec.Command(task.Command[0], task.Command[1:]...)
 	go func(cmd *exec.Cmd) {
-		err := cmd.Run()
+		result, err := cmd.Output()
 		if err != nil {
-			log.Println(fmt.Errorf("Running command %s failed", task.Command))
+			log.Errorf("Running command %s failed", task.Command)
 			log.Println(err)
+		} else {
+			log.Infof("Result of command %s: %s", task.Name, string(result))
 		}
 	}(cmd)
 }
