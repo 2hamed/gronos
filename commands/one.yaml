@@ -1,7 +1,7 @@
 - name: command1
   command: ["/path/to/command1", "param1", "param2"]
   schedule:
-    every: "2:30"
+    every: 2h30m
     between:
       - 3:0-6
       - 12-17:25
@@ -31,7 +31,7 @@
 - name: command2
   command: ["/path/to/command2"]
   schedule:
-    every: 2:30
+    every: 15s
     weekdays:
       - wed
       - mon

@@ -2,7 +2,7 @@ package scheduler
 
 import (
 	// "encoding/json"
-	"errors"
+
 	"strconv"
 	"strings"
 	"time"
@@ -11,7 +11,7 @@ import (
 // Schedule is struct containing when the task should be run
 type Schedule struct {
 	Months    []time.Month   `json:"months,omitempty"`
-	Every     int            `json:"every"`
+	Every     float64        `json:"every"`
 	Weekdays  []time.Weekday `json:"weekdays,omitempty"`
 	Monthdays []int          `json:"monthdays,omitempty"`
 	At        []Hour         `json:"at,omitempty"`
@@ -164,18 +164,9 @@ func parseWeekdays(wdays []string) []time.Weekday {
 }
 
 // Every return the number of seconds at which the task should be run
-func parseEvery(every string) (int, error) {
-	hm := strings.Split(every, ":")
-	if len(hm) > 2 {
-		return 0, errors.New("invalid `every` set")
-	}
-	hour, _ := strconv.Atoi(hm[0])
-	var min int
-	if len(hm) > 1 {
-		min, _ = strconv.Atoi(hm[1])
-	}
-
-	return hour*3600 + min*60, nil
+func parseEvery(every string) (float64, error) {
+	dur, err := time.ParseDuration(every)
+	return dur.Seconds(), err
 }
 
 func (s Schedule) checkWeekday(anchor *time.Time) (bool, empty bool) {

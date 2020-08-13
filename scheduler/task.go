@@ -65,7 +65,7 @@ func (task Task) checkEvery(anchor *time.Time) bool {
 	every := task.Schedule.Every
 
 	if lastTime, ok := tm.taskLastRunTime[task.Name]; ok {
-		if diff := anchor.Unix() - lastTime; int(diff) > every {
+		if diff := float64(anchor.Unix() - lastTime); diff > every {
 			result = true
 		}
 	} else {
