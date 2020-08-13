@@ -91,9 +91,6 @@ func (h hour) Minute() int {
 // parseHour parses a string in the format of HH:mm into an `hour` struct
 func parseHour(str string) (Hour, error) {
 	hm := strings.Split(str, ":")
-	if len(hm) == 0 {
-		return nil, errors.New("invalid hour supplied")
-	}
 	h, err := strconv.Atoi(hm[0])
 
 	if err != nil {
