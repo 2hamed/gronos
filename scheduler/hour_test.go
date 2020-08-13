@@ -1,6 +1,7 @@
 package scheduler
 
 import (
+	"encoding/json"
 	"reflect"
 	"testing"
 	"time"
@@ -17,7 +18,13 @@ func TestParseHour(t *testing.T) {
 	assert.Nil(t, err)
 	assert.True(t, reflect.DeepEqual(h, hour{hour: 3, minute: 15}))
 
+	_, err = json.Marshal(h)
+	assert.Nil(t, err)
+
 	_, err = parseHour(":15")
+	assert.NotNil(t, err)
+
+	_, err = parseHour("")
 	assert.NotNil(t, err)
 
 	_, err = parseHour("5:a")
