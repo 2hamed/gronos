@@ -32,7 +32,7 @@ func StartLooper(configPath string) {
 
 	err = persist(tasks)
 	if err != nil {
-		log.Error("Failed to persist tasks: %v", err)
+		log.Errorf("Failed to persist tasks: %v", err)
 	}
 }
 
