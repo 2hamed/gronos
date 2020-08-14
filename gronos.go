@@ -7,6 +7,7 @@ import (
 
 	"github.com/2hamed/goronos/api"
 	"github.com/2hamed/goronos/scheduler"
+	"github.com/2hamed/goronos/storage"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 )
@@ -29,6 +30,12 @@ func main() {
 
 	configPath := os.Args[1]
 
+	storage, err := storage.NewStorage("./store")
+	if err != nil {
+		panic(err)
+	}
+
+	scheduler.SetStorage(storage)
 	scheduler.StartLooper(configPath)
 
 	r := mux.NewRouter()
@@ -39,7 +46,7 @@ func main() {
 
 	fmt.Println("Gronos engine is running and the API server is listening on port 8080...")
 
-	err := http.ListenAndServe(":8080", nil)
+	err = http.ListenAndServe(":8080", nil)
 
 	if err != nil {
 		panic(err)

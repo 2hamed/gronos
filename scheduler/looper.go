@@ -2,6 +2,8 @@ package scheduler
 
 import (
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var tm = &taskManager{
@@ -12,10 +14,14 @@ var tm = &taskManager{
 
 // StartLooper starts the main looper for tasks
 func StartLooper(configPath string) {
+	var tasks []*Task
 
-	tasks, err := LoadTasksFromDir(tm, configPath)
+	err := load(&tasks)
 	if err != nil {
-		panic(err)
+		tasks, err = LoadTasksFromDir(tm, configPath)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	tm.initialize(tasks)
@@ -23,6 +29,11 @@ func StartLooper(configPath string) {
 	ticker := time.Tick(1 * time.Second)
 
 	go looper(tm.tasks, ticker)
+
+	err = persist(tasks)
+	if err != nil {
+		log.Error("Failed to persist tasks: %v", err)
+	}
 }
 
 func looper(tasks Tasks, ticker <-chan time.Time) {
