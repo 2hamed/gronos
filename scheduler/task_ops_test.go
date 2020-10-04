@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var tasks = []*Task{
+var taskss = []*Task{
 	{
 		Name: "task1",
 	},
@@ -20,24 +20,24 @@ var tasks = []*Task{
 
 func TestGetTasks(t *testing.T) {
 
-	tm.initialize(tasks)
+	tm.initialize(taskss)
 
 	ts := GetTasks()
-	assert.ElementsMatch(t, ts, tasks)
+	assert.ElementsMatch(t, ts, taskss)
 }
 
 func TestGetTask(t *testing.T) {
 
-	tm.initialize(tasks)
+	tm.initialize(taskss)
 
 	ts, err := GetTask("task2")
 	assert.Nil(t, err)
 
-	assert.Equal(t, ts, tasks[1])
+	assert.Equal(t, ts, taskss[1])
 }
 
 func TestDisableTask(t *testing.T) {
-	tm.initialize(tasks)
+	tm.initialize(taskss)
 
 	err := DisableTask("task")
 
@@ -61,7 +61,7 @@ func TestDisableTask(t *testing.T) {
 }
 
 func TestEnableTask(t *testing.T) {
-	tm.initialize(tasks)
+	tm.initialize(taskss)
 
 	err := DisableTask("task1")
 	assert.Nil(t, err)
@@ -74,11 +74,11 @@ func TestEnableTask(t *testing.T) {
 
 	assert.Nil(t, err)
 
-	assert.ElementsMatch(t, GetTasks(), tasks)
+	assert.ElementsMatch(t, GetTasks(), taskss)
 }
 
 func TestGetDisabledTask(t *testing.T) {
-	tm.initialize(tasks)
+	tm.initialize(taskss)
 
 	err := DisableTask("task1")
 	assert.Nil(t, err)

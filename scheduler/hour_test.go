@@ -12,11 +12,11 @@ import (
 func TestParseHour(t *testing.T) {
 	h, err := parseHour("3")
 	assert.Nil(t, err)
-	assert.True(t, reflect.DeepEqual(h, hour{hour: 3, minute: 0}))
+	assert.True(t, reflect.DeepEqual(h, Hour{Hour: 3, Minute: 0}))
 
 	h, err = parseHour("3:15")
 	assert.Nil(t, err)
-	assert.True(t, reflect.DeepEqual(h, hour{hour: 3, minute: 15}))
+	assert.True(t, reflect.DeepEqual(h, Hour{Hour: 3, Minute: 15}))
 
 	_, err = json.Marshal(h)
 	assert.Nil(t, err)
@@ -47,7 +47,7 @@ func TestNewHour(t *testing.T) {
 
 	h, err := NewHour(1, 34)
 	assert.Nil(t, err)
-	assert.True(t, reflect.DeepEqual(h, hour{hour: 1, minute: 34}))
+	assert.True(t, reflect.DeepEqual(h, Hour{Hour: 1, Minute: 34}))
 }
 
 func TestIsAfter(t *testing.T) {
