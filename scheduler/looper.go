@@ -11,14 +11,26 @@ var tm = &taskManager{
 	disabledTasks:   make(map[string]bool),
 	taskLastRunTime: make(map[string]int64),
 }
+var o *Options
 
 // StartLooper starts the main looper for tasks
-func StartLooper(configPath string) {
+func StartLooper(initialConfigPath string, options ...SchedulerOption) {
+
+	o = new(Options)
+
+	for _, opt := range options {
+		opt(o)
+	}
+
+	initStorage(o)
+
 	var tasks []*Task
 
-	err := load(&tasks)
+	err := load(tasks)
+	log.Println(tasks)
 	if err != nil {
-		tasks, err = LoadTasksFromDir(tm, configPath)
+		log.Println("loading a new")
+		tasks, err = LoadTasksFromDir(tm, initialConfigPath)
 		if err != nil {
 			panic(err)
 		}
@@ -30,7 +42,7 @@ func StartLooper(configPath string) {
 
 	go looper(tm.tasks, ticker)
 
-	err = persist(tasks)
+	err = store(tasks)
 	if err != nil {
 		log.Errorf("Failed to persist tasks: %v", err)
 	}

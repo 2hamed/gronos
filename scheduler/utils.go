@@ -65,7 +65,7 @@ func HourSliceContainsHoursMintues(haystack []Hour, n time.Time) bool {
 	}
 
 	for _, t := range haystack {
-		if t.Hour() == n.Hour() && t.Minute() == n.Minute() {
+		if t.Hour == n.Hour() && t.Minute == n.Minute() {
 			return true
 		}
 	}

@@ -51,7 +51,7 @@
       at:
         - 5
 - name: echo task
-  command: ["/home/hamed/echo.sh"]
+  command: ["ls"]
   schedule:
     every: 10s
 
