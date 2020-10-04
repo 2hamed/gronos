@@ -5,3 +5,4 @@
 node_modules
 logs.txt
 store
+*.gob
