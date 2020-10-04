@@ -29,7 +29,7 @@ func store(tasks tasks) error {
 	return enc.Encode(tasks)
 }
 
-func load(tasks tasks) error {
+func load(tasks *tasks) error {
 	dec := gob.NewDecoder(storageMedium)
 
 	return dec.Decode(tasks)

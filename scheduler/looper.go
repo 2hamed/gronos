@@ -24,12 +24,11 @@ func StartLooper(initialConfigPath string, options ...SchedulerOption) {
 
 	initStorage(o)
 
-	var tasks []*Task
+	var tasks tasks
 
-	err := load(tasks)
-	log.Println(tasks)
+	err := load(&tasks)
+
 	if err != nil {
-		log.Println("loading a new")
 		tasks, err = LoadTasksFromDir(tm, initialConfigPath)
 		if err != nil {
 			panic(err)
