@@ -6,8 +6,6 @@ import (
 	"os"
 )
 
-type tasks []*Task
-
 var storageMedium io.ReadWriteCloser
 
 func initStorage(options *Options) {
@@ -23,13 +21,13 @@ func initStorage(options *Options) {
 	}
 }
 
-func store(tasks tasks) error {
+func store(tasks []*Task) error {
 	enc := gob.NewEncoder(storageMedium)
 
 	return enc.Encode(tasks)
 }
 
-func load(tasks *tasks) error {
+func load(tasks *[]*Task) error {
 	dec := gob.NewDecoder(storageMedium)
 
 	return dec.Decode(tasks)

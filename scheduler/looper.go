@@ -24,7 +24,7 @@ func StartLooper(initialConfigPath string, options ...SchedulerOption) {
 
 	initStorage(o)
 
-	var tasks tasks
+	var tasks []*Task
 
 	err := load(&tasks)
 
